@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical" >
+
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="Course"
+            android:id="@+id/course_list_item_title"
+            android:layout_marginTop="5dp"
+            android:padding="2dp"
+            android:textStyle="bold"  />
+    </TableRow>
+
+    <TableRow
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:text="Hours:"
+            android:padding="2dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_height="wrap_content"
+            android:id="@+id/course_list_item_hours"
+            android:padding="2dp"
+            android:layout_weight="1" />
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:text="Credits:"
+            android:padding="2dp"/>
+
+        <TextView
+            android:layout_weight="1"
+            android:layout_height="wrap_content"
+            android:id="@+id/course_list_item_credits"
+            android:padding="2dp"/>
+    </TableRow>
+</TableLayout>

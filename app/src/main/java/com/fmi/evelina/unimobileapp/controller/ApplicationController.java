@@ -1,6 +1,9 @@
 package com.fmi.evelina.unimobileapp.controller;
 
 import android.app.Application;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -11,12 +14,14 @@ import com.android.volley.toolbox.Volley;
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.helper.DateDeserializer;
 import com.fmi.evelina.unimobileapp.helper.TimeDeserializer;
-import com.fmi.evelina.unimobileapp.model.ElectionCampaign;
+import com.fmi.evelina.unimobileapp.localDB.DataBaseAPI;
 import com.fmi.evelina.unimobileapp.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import java.io.File;
 import java.sql.Time;
+import java.text.DateFormat;
 import java.util.Date;
 
 public class ApplicationController extends Application {
@@ -35,14 +40,19 @@ public class ApplicationController extends Application {
      * A singleton instance of the application class for easy access in other places
      */
     private static ApplicationController _sInstance;
+    private static User _user = null;
+    private static Gson _gson;
+    private static DataProvider _dataProvider;
 
     public static boolean isLoggedIn() {
         return _user != null;
     }
-    public static String getServerURL() {return getInstance().getString(R.string.server_url);}
 
-    private static User _user = null;
-    private static Gson _gson;
+    public static String getServerURL() {
+        return getInstance().getString(R.string.server_url);
+    }
+
+    public static DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT);
 
 
     @Override
@@ -53,10 +63,12 @@ public class ApplicationController extends Application {
         GsonBuilder gSonBuilder = new GsonBuilder();
         gSonBuilder.registerTypeAdapter(Date.class, new DateDeserializer());
         gSonBuilder.registerTypeAdapter(Time.class, new TimeDeserializer());
-        _gson = gSonBuilder.create();
 
+        _gson = gSonBuilder.serializeNulls().create();
         // initialize the singleton
         _sInstance = this;
+
+        _dataProvider = new DataProvider(getApplicationContext());
 
         Log.v("onCreate ", (_sInstance == null ? "true" : "false"));
     }
@@ -135,4 +147,14 @@ public class ApplicationController extends Application {
     public static Gson getGson() {
         return _gson;
     }
+
+    public static File getFileDir() {
+        return getInstance().getCacheDir();
+    }
+
+    public static DataProvider getDataProvider() {
+        return _dataProvider;
+    }
+
+
 }

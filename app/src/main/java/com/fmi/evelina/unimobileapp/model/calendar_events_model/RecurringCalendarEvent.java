@@ -1,6 +1,5 @@
-package com.fmi.evelina.unimobileapp.model;
+package com.fmi.evelina.unimobileapp.model.calendar_events_model;
 
-import android.graphics.Color;
 import android.util.Log;
 
 import com.alamkanak.weekview.WeekViewEvent;
@@ -12,7 +11,6 @@ import org.joda.time.DateTime;
 import org.joda.time.LocalDate;
 import org.joda.time.LocalTime;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -43,10 +41,6 @@ public class RecurringCalendarEvent extends CalendarEvent {
     @SerializedName("flg_elective")
     public Character IsElective;
 
-
-    @Expose
-    @SerializedName("lecturer")
-    public String Lecturer;
 
     public List<WeekViewEvent> getWeekViewEvents() {
 
@@ -94,9 +88,5 @@ public class RecurringCalendarEvent extends CalendarEvent {
             currentDate = currentDate.plusWeeks(1);
         }
         return result;
-    }
-
-    public boolean isRecurring() {
-        return StartDate.compareTo(EndDate) != 0;
     }
 }

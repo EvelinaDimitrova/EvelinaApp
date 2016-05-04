@@ -1,6 +1,6 @@
 <resources>
     <string name="app_name">UniMobileApp</string>
-    <string name="server_url">http://98bf2bf7.ngrok.io</string>
+    <string name="server_url">http://dfcce08c.ngrok.io</string>
 
     <!-- Strings related to login -->
     <string name="prompt_user_id">User Id</string>
@@ -26,11 +26,15 @@
     <string name="title_activity_news_details">NewsDetailsActivity</string>
     <string name="title_student_plan">StudentPlanActivity</string>
     <string name="title_election_campaign">ElectionCampaignActivity</string>
+    <string name="title_election_course">ElectionCourseActivity</string>
+    <string name="title_contacts">ContactsActivity</string>
+    <string name="title_activity_create_event">CreateEventActivity</string>
 
     <string-array name="student_plan_filter">
         <item>Only for my course</item>
         <item>Only for my program</item>
         <item>All</item>
     </string-array>
+    <string name="title_activity_temp">temp</string>
 
 </resources>

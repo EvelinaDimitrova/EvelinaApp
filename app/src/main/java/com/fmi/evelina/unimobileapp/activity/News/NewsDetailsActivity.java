@@ -1,8 +1,6 @@
-package com.fmi.evelina.unimobileapp.activity;
+package com.fmi.evelina.unimobileapp.activity.News;
 
-import android.media.Image;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -10,11 +8,10 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.fmi.evelina.unimobileapp.R;
+import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
 import com.fmi.evelina.unimobileapp.model.News;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.DataAPI;
-
-import org.w3c.dom.Text;
+import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<News> {
 
@@ -29,13 +26,13 @@ public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<
 
         setDrawerContentView(R.layout.content_news_details);
 
-        DataAPI.getNewsDetails(newsId,this);
+        NetworkAPI.getNewsDetails(newsId, this);
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.news_details, menu);
+        getMenuInflater().inflate(R.menu.back_menu, menu);
         return true;
     }
 
@@ -58,25 +55,26 @@ public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<
         final TextView date = (TextView) findViewById(R.id.news_details_date);
         final TextView text = (TextView) findViewById(R.id.news_details_text);
 
-        Log.v("ASD", news.Title);
         title.setText(news.Title);
         date.setText(news.Date.toString());
         text.setText(news.Text);
 
-        DataAPI.getNewsImage(news, new CallBack<News>() {
-            @Override
-            public void onSuccess(News data) {
-                if(data.Image != null){
-                    image.setVisibility(View.VISIBLE);
-                    image.setImageBitmap(data.Image);
+        if(news.ImageName != null) {
+            NetworkAPI.getNewsImage(news, new CallBack<News>() {
+                @Override
+                public void onSuccess(News data) {
+                    if (data.Image != null) {
+                        image.setVisibility(View.VISIBLE);
+                        image.setImageBitmap(data.Image);
+                    }
                 }
-            }
 
-            @Override
-            public void onFail(String msg) {
+                @Override
+                public void onFail(String msg) {
 
-            }
-        });
+                }
+            });
+        }
     }
 
     @Override

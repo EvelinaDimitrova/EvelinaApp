@@ -16,8 +16,11 @@ import android.view.MenuItem;
 import android.widget.FrameLayout;
 
 import com.fmi.evelina.unimobileapp.R;
+import com.fmi.evelina.unimobileapp.activity.Calendar.CalendarActivity;
+import com.fmi.evelina.unimobileapp.activity.Contacts.ContactsActivity;
+import com.fmi.evelina.unimobileapp.activity.ElectionCampaign.ElectionCampaignActivity;
+import com.fmi.evelina.unimobileapp.activity.News.NewsActivity;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
-import com.fmi.evelina.unimobileapp.model.ElectionCampaign;
 
 public class DrawerBaseActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener {
@@ -42,16 +45,17 @@ public class DrawerBaseActivity extends AppCompatActivity
         enableButtons(navigationView);
 
         //Handle LogOut message
-        IntentFilter intentFilter = new IntentFilter();
-        intentFilter.addAction("com.package.ACTION_LOGOUT");
-        registerReceiver(new BroadcastReceiver() {
-            @Override
-            public void onReceive(Context context, Intent intent) {
-                Log.d("onReceive", "Logout in progress");
-                //At this point you should start the login activity and finish this one
-                finish();
-            }
-        }, intentFilter);
+        //TODO investigate tis
+//        IntentFilter intentFilter = new IntentFilter();
+//        intentFilter.addAction("com.package.ACTION_LOGOUT");
+//        registerReceiver(new BroadcastReceiver() {
+//            @Override
+//            public void onReceive(Context context, Intent intent) {
+//                Log.d("onReceive", "Logout in progress");
+//                //At this point you should start the login activity and finish this one
+//                finish();
+//            }
+//        }, intentFilter);
     }
 
     @Override
@@ -106,9 +110,10 @@ public class DrawerBaseActivity extends AppCompatActivity
             ApplicationController.getInstance().setLoggedUser(null);
 
             /** send a LogOut message**/
-            Intent broadcastIntent = new Intent();
-            broadcastIntent.setAction("com.package.ACTION_LOGOUT");
-            sendBroadcast(broadcastIntent);
+        //TODO investigate this
+//            Intent broadcastIntent = new Intent();
+//            broadcastIntent.setAction("com.package.ACTION_LOGOUT");
+//            sendBroadcast(broadcastIntent);
 
             Intent home = new Intent(this, HomeActivity.class);
             startActivity(home);
@@ -121,6 +126,9 @@ public class DrawerBaseActivity extends AppCompatActivity
         } else if (id == R.id.nav_election_campaign) {
             Intent electionCampaign = new Intent(this, ElectionCampaignActivity.class);
             startActivity(electionCampaign);
+        } else if (id == R.id.nav_contacts) {
+            Intent contacts = new Intent(this, ContactsActivity.class);
+            startActivity(contacts);
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -135,11 +143,25 @@ public class DrawerBaseActivity extends AppCompatActivity
 
     private void enableButtons(NavigationView navigationView){
         boolean loggedIn = ApplicationController.getInstance().isLoggedIn();
-
         navigationView.getMenu().findItem(R.id.nav_login).setVisible(!loggedIn);
         navigationView.getMenu().findItem(R.id.nav_logout).setVisible(loggedIn);
 
         navigationView.getMenu().findItem(R.id.learning_section).setVisible(loggedIn);
+
+        if (loggedIn) {
+            String userRole = ApplicationController.getLoggedUser().Role;
+            if (userRole.equals("STUD")) {
+                navigationView.getMenu().findItem(R.id.learning_section).setTitle("Learning");
+
+                navigationView.getMenu().findItem(R.id.nav_student_plan).setVisible(true);
+                navigationView.getMenu().findItem(R.id.nav_election_campaign).setVisible(true);
+            }
+            if (userRole.equals("LECT")) {
+                navigationView.getMenu().findItem(R.id.learning_section).setTitle("Teaching");
+            }
+        }
+
+
     }
 
 //    public void setContentView(int layoutResID) {

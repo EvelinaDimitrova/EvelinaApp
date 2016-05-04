@@ -16,7 +16,7 @@ import com.fmi.evelina.unimobileapp.model.student_plan_model.Grade;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.Semester;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.StudentPlan;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.DataAPI;
+import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -92,7 +92,7 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
         ListView coursesListView = (ListView) findViewById(R.id.courses_listView);
         coursesListView.setAdapter(coursesListAdapter);
 
-        DataAPI.getStudentPlan(this);
+        NetworkAPI.getStudentPlan(this);
         //DataAPI.getStudentPlanTest(this);
     }
 
@@ -109,7 +109,7 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
 
     @Override
     public void onFail(String msg) {
-
+        Log.v("EVE_TRACE_ERROR", msg);
     }
 }
 

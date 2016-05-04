@@ -4,27 +4,15 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
-import android.app.LoaderManager.LoaderCallbacks;
-
-import android.content.CursorLoader;
-import android.content.Loader;
-import android.database.Cursor;
-import android.net.Uri;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.provider.ContactsContract;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.inputmethod.EditorInfo;
-import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -35,12 +23,7 @@ import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.model.User;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.DataAPI;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static android.Manifest.permission.READ_CONTACTS;
+import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 /**
  * A login screen that offers login via email/password.
@@ -131,10 +114,9 @@ public class LoginActivity extends AppCompatActivity {
 
             // Call the API to verify the user
             //TODO call the real signIn method
-            DataAPI.signIn(userId, password, new CallBack<User>() {
+            NetworkAPI.signIn(userId, password, new CallBack<User>() {
                 @Override
                 public void onSuccess(User data) {
-                    Log.v("LoginActivity","onSuccess");
                     showProgress(false);
 
                     ApplicationController.setLoggedUser(data);
@@ -150,9 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                     showProgress(false);
 
                     Toast.makeText(LoginActivity.this, msg, Toast.LENGTH_LONG).show();
-
-//                    mPasswordView.setError(msg);
-//                    mPasswordView.requestFocus();
                 }
             });
         }

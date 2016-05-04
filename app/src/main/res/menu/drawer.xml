@@ -20,10 +20,13 @@
             android:id="@+id/nav_news"
             android:icon="@drawable/ic_menu_gallery"
             android:title="NEWS"/>
+        <item
+            android:id="@+id/nav_contacts"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="CONTACTS"/>
     </group>
 
     <item
-        android:title="Learning"
         android:id="@+id/learning_section"
         android:visible="false">
         <menu>
@@ -34,11 +37,13 @@
             <item
                 android:id="@+id/nav_student_plan"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Student Plan" />
+                android:title="Student Plan"
+                android:visible="false"/>
             <item
                 android:id="@+id/nav_election_campaign"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Election Campaign" />
+                android:title="Election Campaign"
+                android:visible="false"/>
         </menu>
     </item>
 

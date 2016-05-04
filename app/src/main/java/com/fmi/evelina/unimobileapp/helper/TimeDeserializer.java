@@ -5,15 +5,20 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonParseException;
+import com.google.gson.JsonPrimitive;
+import com.google.gson.JsonSerializationContext;
+import com.google.gson.JsonSerializer;
 
 import java.lang.reflect.Type;
 import java.sql.Time;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Locale;
 
-public class TimeDeserializer implements JsonDeserializer<Time> {
+public class TimeDeserializer implements JsonDeserializer<Time>, JsonSerializer<Time> {
     private static final String TIME_FORMAT = "HH:mm:ss";
+    private static final DateFormat timeFormat = new SimpleDateFormat(TIME_FORMAT);
 
     @Override
     public Time deserialize(JsonElement jsonElement, Type typeOF,
@@ -30,5 +35,11 @@ public class TimeDeserializer implements JsonDeserializer<Time> {
         }
         throw new JsonParseException("Unparseable time: \"" + jsonElement.getAsString()
                 + "\". Supported formats: " + TIME_FORMAT);
+    }
+
+    @Override
+    public JsonElement serialize(Time src, Type typeOfSrc, JsonSerializationContext context) {
+        String dateFormatAsString = timeFormat.format(src);
+        return new JsonPrimitive(dateFormatAsString);
     }
 }

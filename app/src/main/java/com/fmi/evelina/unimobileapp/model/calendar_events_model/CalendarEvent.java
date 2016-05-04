@@ -1,4 +1,4 @@
-package com.fmi.evelina.unimobileapp.model;
+package com.fmi.evelina.unimobileapp.model.calendar_events_model;
 
 import android.graphics.Color;
 
@@ -34,7 +34,7 @@ public class CalendarEvent {
     public Time EndTime;
 
     @Expose
-    @SerializedName("date")
+    @SerializedName("event_date")
     public Date EventDate;
 
     @Expose
@@ -52,6 +52,10 @@ public class CalendarEvent {
     @Expose
     @SerializedName("location")
     public String Location;
+
+    @Expose
+    @SerializedName("room_id")
+    public Integer RoomId;
 
     @Expose
     @SerializedName("type_code")

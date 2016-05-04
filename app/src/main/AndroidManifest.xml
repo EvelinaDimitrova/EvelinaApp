@@ -2,8 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.fmi.evelina.unimobileapp">
 
-
     <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
 
     <application
         android:name=".controller.ApplicationController"
@@ -25,31 +26,49 @@
             android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <activity
-            android:name=".activity.CalendarActivity"
+            android:name=".activity.Calendar.CalendarActivity"
             android:label="@string/title_activity_calendar"
             android:theme="@style/AppTheme.NoActionBar" />
-        <!--<activity android:name=".dialog.ViewEvent" />-->
         <activity
-            android:name=".activity.NewsActivity"
+            android:name=".activity.Calendar.CreateEventActivity"
+            android:label="@string/title_activity_create_event"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.News.NewsActivity"
             android:label="@string/title_activity_news"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.NewsDetailsActivity"
+            android:name=".activity.News.NewsDetailsActivity"
             android:label="@string/title_activity_news_details"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.News.CreateNewsActivity"
+            android:label="@string/title_activity_news_details"
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.StudentPlanActivity"
             android:label="@string/title_student_plan"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
         <activity
-            android:name=".activity.ElectionCampaignActivity"
+            android:name=".activity.ElectionCampaign.ElectionCampaignActivity"
             android:label="@string/title_election_campaign"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.ElectionCampaign.ElectionCourseActivity"
+            android:label="@string/title_election_course"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.Contacts.ContactsActivity"
+            android:label="@string/title_contacts"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.Contacts.ContactDetailsActivity"
+            android:label="@string/title_contacts"
+            android:theme="@style/AppTheme.NoActionBar" />
     </application>
 
 </manifest>

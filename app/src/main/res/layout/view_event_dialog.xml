@@ -134,6 +134,26 @@
 
         <TableRow
             android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/trEventProgram"
+            android:visibility="gone">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:text="Program: " />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:id="@+id/tvEventProgram" />
+
+        </TableRow>
+
+        <TableRow
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
             <TextView

@@ -22,11 +22,11 @@ public class ServerStatusRequest extends Request<Integer> {
     private HashMap mCustomHeaders;
 
     public ServerStatusRequest(int method,
-                                     String url,
-                                     HashMap customHeaders,
-                                     String body,
-                                     Response.Listener listener,
-                                     Response.ErrorListener errorListener) {
+                               String url,
+                               HashMap customHeaders,
+                               String body,
+                               Response.Listener listener,
+                               Response.ErrorListener errorListener) {
 
         super(method, url, errorListener);
         mCustomHeaders = customHeaders;
@@ -41,9 +41,9 @@ public class ServerStatusRequest extends Request<Integer> {
     }
 
     public ServerStatusRequest(String url,
-                                     HashMap customHeaders,
-                                     Response.Listener listener,
-                                     Response.ErrorListener errorListener) {
+                               HashMap customHeaders,
+                               Response.Listener listener,
+                               Response.ErrorListener errorListener) {
 
         super(Method.GET, url, errorListener);
         mCustomHeaders = customHeaders;

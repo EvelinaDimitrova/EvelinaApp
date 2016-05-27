@@ -5,25 +5,29 @@
         <item
             android:id="@+id/nav_home"
             android:icon="@drawable/ic_menu_camera"
-            android:title="HOME" />
+            android:title="@string/drawer_home" />
         <item
             android:id="@+id/nav_login"
             android:icon="@drawable/ic_menu_camera"
-            android:title="LOG IN"
+            android:title="@string/drawer_login"
             android:visible="false" />
         <item
             android:id="@+id/nav_logout"
             android:icon="@drawable/ic_menu_camera"
-            android:title="LOG OUT"
+            android:title="@string/drawer_logout"
             android:visible="false" />
         <item
             android:id="@+id/nav_news"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="NEWS"/>
+            android:title="@string/drawer_news" />
         <item
             android:id="@+id/nav_contacts"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="CONTACTS"/>
+            android:title="@string/drawer_contacts" />
+        <item
+            android:id="@+id/nav_settings"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="@string/drawer_settings" />
     </group>
 
     <item
@@ -33,17 +37,17 @@
             <item
                 android:id="@+id/nav_calendar"
                 android:icon="@drawable/ic_menu_gallery"
-                android:title="Calendar"/>
+                android:title="@string/drawer_calendar" />
             <item
                 android:id="@+id/nav_student_plan"
                 android:icon="@drawable/ic_menu_share"
-                android:title="Student Plan"
-                android:visible="false"/>
+                android:title="@string/drawer_student_plan"
+                android:visible="false" />
             <item
                 android:id="@+id/nav_election_campaign"
                 android:icon="@drawable/ic_menu_send"
-                android:title="Election Campaign"
-                android:visible="false"/>
+                android:title="@string/drawer_election_campaign"
+                android:visible="false" />
         </menu>
     </item>
 

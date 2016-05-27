@@ -4,7 +4,7 @@
     <item
         android:id="@+id/action_create_news"
         android:orderInCategory="100"
-        android:title="Create News"
+        android:title="@string/news_create"
         app:showAsAction="always"
         android:visible="false"/>
 </menu>

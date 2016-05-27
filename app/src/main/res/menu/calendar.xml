@@ -1,36 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
-    <item android:id="@+id/action_today"
-        android:title="Today"
+    <item
+        android:id="@+id/action_today"
         android:orderInCategory="100"
-        app:showAsAction="ifRoom"/>
+        android:title="@string/calendar_today"
+        app:showAsAction="ifRoom" />
     <group android:checkableBehavior="single">
-        <item android:id="@+id/action_day_view"
-            android:title="day_view"
+        <item
+            android:id="@+id/action_day_view"
             android:orderInCategory="100"
-            app:showAsAction="never"/>
-        <item android:id="@+id/action_three_day_view"
-            android:title="three_day_view"
-            android:orderInCategory="100"
-            app:showAsAction="never"
-            android:checked="true"/>
-        <item android:id="@+id/action_week_view"
-            android:title="week_view"
-            android:orderInCategory="100"
-            app:showAsAction="never"/>
-    </group>
-    <group android:checkableBehavior="all">
-        <item android:id="@+id/cbShowScheduledEvents"
-            android:title="Show Schedule"
-            android:orderInCategory="100"
+            android:title="@string/calendar_day_view"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_three_day_view"
             android:checked="true"
-            app:showAsAction="never"/>
-        <item android:id="@+id/cbShowEvents"
-            android:title="Show Event"
             android:orderInCategory="100"
+            android:title="@string/calendar_three_day_view"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/action_week_view"
+            android:orderInCategory="100"
+            android:title="@string/calendar_week_view"
+            app:showAsAction="never" />
+    </group>
+    <group
+        android:id="@+id/calendar_menu_filter_group"
+        android:checkableBehavior="all">
+        <item
+            android:id="@+id/cbShowScheduledEvents"
+            android:checked="true"
+            android:orderInCategory="100"
+            android:title="@string/calendar_show_schedule"
+            app:showAsAction="never" />
+        <item
+            android:id="@+id/cbShowEvents"
             android:checked="false"
-            app:showAsAction="never"/>
+            android:orderInCategory="100"
+            android:title="@string/calendar_show_events"
+            app:showAsAction="never" />
     </group>
 
 </menu>

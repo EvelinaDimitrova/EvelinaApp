@@ -127,4 +127,11 @@ public class ContactDetailsActivity extends DrawerBaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_contact_detail));
+    }
 }

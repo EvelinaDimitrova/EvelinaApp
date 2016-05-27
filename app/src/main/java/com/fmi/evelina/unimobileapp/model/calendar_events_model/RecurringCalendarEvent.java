@@ -78,8 +78,6 @@ public class RecurringCalendarEvent extends CalendarEvent {
                     Location,
                     startDateTime.toGregorianCalendar(),
                     endDateTime.toGregorianCalendar());
-
-            Log.v("result_color=", "" + EventColorMap.getEventColor(TypeCode));
             
             weekViewEvent.setColor(EventColorMap.getEventColor(TypeCode));
 

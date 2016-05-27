@@ -14,7 +14,8 @@
     <Spinner
         android:id="@+id/lecturers_contact_category_spinner"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"></Spinner>
+        android:layout_height="wrap_content"
+        android:overlapAnchor="false"></Spinner>
 
     <ListView
         android:id="@+id/lecturers_contacts_listView"

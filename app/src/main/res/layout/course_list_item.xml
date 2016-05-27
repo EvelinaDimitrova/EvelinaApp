@@ -13,7 +13,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Course"
+            android:text="@string/student_plan_course"
             android:id="@+id/course_list_item_title"
             android:layout_marginTop="5dp"
             android:padding="2dp"
@@ -26,7 +26,7 @@
 
         <TextView
             android:layout_height="wrap_content"
-            android:text="Hours:"
+            android:text="@string/course_hours_label"
             android:padding="2dp"
             android:layout_weight="1" />
 
@@ -39,7 +39,7 @@
         <TextView
             android:layout_weight="1"
             android:layout_height="wrap_content"
-            android:text="Credits:"
+            android:text="@string/course_credits_label"
             android:padding="2dp"/>
 
         <TextView

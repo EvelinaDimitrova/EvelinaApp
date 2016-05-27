@@ -10,7 +10,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="5dp"
         android:padding="2dp"
-        android:text="Course"
+        android:text="@string/election_course_course"
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textStyle="bold" />
 
@@ -23,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
-            android:text="Category:" />
+            android:text="@string/election_course_category" />
 
         <TextView
             android:id="@+id/election_course_list_item_category"
@@ -35,22 +35,13 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp"
-            android:text="Credits:" />
+            android:text="@string/course_credits_label" />
 
         <TextView
             android:id="@+id/election_course_list_item_credits"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:padding="2dp" />
-
-        <!--<Button-->
-            <!--android:id="@+id/election_course_list_item_button"-->
-            <!--style="?android:textAppearanceSmall"-->
-            <!--android:layout_width="150dp"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:text="button"-->
-            <!--android:textStyle="bold"-->
-            <!--android:focusable="false"/>-->
 
     </LinearLayout>
 </LinearLayout>

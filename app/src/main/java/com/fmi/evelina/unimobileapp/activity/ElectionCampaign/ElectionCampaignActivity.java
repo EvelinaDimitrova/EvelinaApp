@@ -12,17 +12,18 @@ import android.widget.TextView;
 
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
+import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.ElectionCoursesListAdapter;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCampaign;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCourse;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class ElectionCampaignActivity extends DrawerBaseActivity implements CallBack<ElectionCampaign> {
 
+    private static final int VIEW_COURSE_REQUEST = 1;
     private ElectionCampaign currentElectionCampaign;
     private List<ElectionCourse> allElectionCourseList = new ArrayList<>();
     private List<ElectionCourse> displayElectionCourseList = new ArrayList<>();
@@ -40,8 +41,8 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         ListView coursesListView = (ListView) findViewById(R.id.election_courses_listView);
         coursesListView.setAdapter(coursesListAdapter);
 
-        studentPlanSpinner = (Spinner)findViewById(R.id.student_plan_spinner);
-        categorySpinner = (Spinner)findViewById(R.id.course_category_spinner);
+        studentPlanSpinner = (Spinner) findViewById(R.id.student_plan_spinner);
+        categorySpinner = (Spinner) findViewById(R.id.course_category_spinner);
 
         studentPlanSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
@@ -76,7 +77,7 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
             }
         });
 
-        NetworkAPI.getCurrentElectionCampaign(this);
+        ApplicationController.getDataProvider().getCurrentElectionCampaign(this);
     }
 
     private void showElectionCourseView(ElectionCourse course) {
@@ -85,7 +86,7 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         b.putParcelable(ElectionCourseActivity.COURSE_KEY, course);
         b.putParcelable(ElectionCourseActivity.CAMPAIGN_KEY, currentElectionCampaign);
         intent.putExtras(b);
-        startActivity(intent);
+        startActivityForResult(intent, VIEW_COURSE_REQUEST);
     }
 
     private void populateStudentPlanFilter() {
@@ -96,21 +97,21 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         spinner.setAdapter(adapter);
     }
 
-    private void populateCourseCategoryFilter(){
+    private void populateCourseCategoryFilter() {
 
         List<String> availableCategories = new ArrayList<>();
         ArrayAdapter<String> courseCategoryAdapter;
 
-        for(ElectionCourse course : allElectionCourseList) {
+        for (ElectionCourse course : allElectionCourseList) {
             if (!availableCategories.contains(course.Category)) {
                 availableCategories.add(course.Category);
             }
         }
 
-        availableCategories.add(0,"-- All --");
+        availableCategories.add(0, getString(R.string.election_category_all));
 
         Spinner spinner = (Spinner) findViewById(R.id.course_category_spinner);
-        courseCategoryAdapter = new ArrayAdapter<>(ElectionCampaignActivity.this,android.R.layout.simple_spinner_item, availableCategories);
+        courseCategoryAdapter = new ArrayAdapter<>(ElectionCampaignActivity.this, android.R.layout.simple_spinner_item, availableCategories);
         courseCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(courseCategoryAdapter);
     }
@@ -122,19 +123,24 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         View dataContainer = findViewById(R.id.election_campaign_data);
         dataContainer.setVisibility(View.VISIBLE);
 
-        View errorMessage = findViewById(R.id.election_campaign_error);
-        errorMessage.setVisibility(View.GONE);
-
         TextView startTime = (TextView) findViewById(R.id.election_campaign_start);
-        startTime.setText(currentElectionCampaign.OpenDate.toString());
+        startTime.setText(ApplicationController.fullDateTimeFormat.format(currentElectionCampaign.OpenDate));
 
         TextView closeTime = (TextView) findViewById(R.id.election_campaign_close);
-        closeTime.setText(currentElectionCampaign.CloseDate.toString());
+        closeTime.setText(ApplicationController.fullDateTimeFormat.format(currentElectionCampaign.CloseDate));
 
         TextView endTime = (TextView) findViewById(R.id.election_campaign_end);
-        endTime.setText(currentElectionCampaign.EndDate.toString());
+        endTime.setText(ApplicationController.fullDateTimeFormat.format(currentElectionCampaign.EndDate));
 
-        NetworkAPI.getElectionCampaignCourses(new CallBack<List<ElectionCourse>>() {
+        View info = findViewById(R.id.election_campaign_not_active);
+        if(!currentElectionCampaign.IsOpen() && !currentElectionCampaign.IsClosed()){
+            info.setVisibility(View.VISIBLE);
+        }
+        else {
+            info.setVisibility(View.GONE);
+        }
+
+        ApplicationController.getDataProvider().getElectionCampaignCourses(new CallBack<List<ElectionCourse>>() {
             @Override
             public void onSuccess(List<ElectionCourse> data) {
                 allElectionCourseList.addAll(data);
@@ -154,11 +160,28 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
 
     @Override
     public void onFail(String msg) {
-        TextView title = (TextView) findViewById(R.id.election_campaign_error);
-        String msg2 = "ASD";
-        title.setText(msg2);
-        title.setVisibility(View.VISIBLE);
+        Log.v("EVE_TRACE_ERROR", msg);
+    }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if (requestCode == VIEW_COURSE_REQUEST) {
+            if (resultCode == ElectionCourseActivity.COURSE_ENROLLED || resultCode == ElectionCourseActivity.COURSE_CANCELED) {
+                //Get course Id
+                Bundle b = data.getExtras();
+                int courseId = b.getInt(ElectionCourseActivity.COURSE_ID_KEY);
+
+                for (ElectionCourse course : allElectionCourseList) {
+                    if (course.Id == courseId) {
+                        course.Enrolled = resultCode == ElectionCourseActivity.COURSE_ENROLLED;
+                        //updateDisplayData();
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     private void updateDisplayData() {
@@ -168,16 +191,12 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         int selectedCategoryInd = categorySpinner.getSelectedItemPosition();
         String selectedCategoryVal = categorySpinner.getSelectedItem().toString();
 
-        Log.v("EVE_TRACE", "selectedStudentPlanInd " + selectedStudentPlanInd);
-        Log.v("EVE_TRACE", "selectedCategoryInd " + selectedCategoryInd);
-        Log.v("EVE_TRACE", "selectedCategoryVal " + selectedCategoryVal);
-
-        switch (selectedStudentPlanInd){
+        switch (selectedStudentPlanInd) {
             //Only for my program and grade
             case 0: {
                 //All categories
-                if(selectedCategoryInd == 0) {
-                    for(ElectionCourse c : allElectionCourseList) {
+                if (selectedCategoryInd == 0) {
+                    for (ElectionCourse c : allElectionCourseList) {
                         if (c.IsForMyProgram == true && c.IsForMyGrade == true) {
                             displayElectionCourseList.add(c);
                         }
@@ -185,7 +204,7 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
                 }
                 //Specified category
                 else {
-                    for(ElectionCourse c : allElectionCourseList) {
+                    for (ElectionCourse c : allElectionCourseList) {
                         if (c.Category.equals(selectedCategoryVal) && c.IsForMyProgram == true && c.IsForMyGrade == true) {
                             displayElectionCourseList.add(c);
                         }
@@ -196,8 +215,8 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
             //Only for my program
             case 1: {
                 //All categories
-                if(selectedCategoryInd == 0) {
-                    for(ElectionCourse c : allElectionCourseList) {
+                if (selectedCategoryInd == 0) {
+                    for (ElectionCourse c : allElectionCourseList) {
                         if (c.IsForMyProgram) {
                             displayElectionCourseList.add(c);
                         }
@@ -205,8 +224,8 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
                 }
                 //Specified category
                 else {
-                    for(ElectionCourse c : allElectionCourseList) {
-                        if (c.Category.equals(selectedCategoryVal) && c.IsForMyProgram  == true) {
+                    for (ElectionCourse c : allElectionCourseList) {
+                        if (c.Category.equals(selectedCategoryVal) && c.IsForMyProgram == true) {
                             displayElectionCourseList.add(c);
                         }
                     }
@@ -216,12 +235,12 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
             //All programs and grades
             case 2: {
                 //All categories
-                if(selectedCategoryInd == 0) {
-                     displayElectionCourseList.addAll(allElectionCourseList);
+                if (selectedCategoryInd == 0) {
+                    displayElectionCourseList.addAll(allElectionCourseList);
                 }
                 //Specified category
                 else {
-                    for(ElectionCourse c : allElectionCourseList) {
+                    for (ElectionCourse c : allElectionCourseList) {
                         if (c.Category.equals(selectedCategoryVal)) {
                             displayElectionCourseList.add(c);
                         }
@@ -235,5 +254,12 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
 
         coursesListAdapter.notifyDataSetChanged();
 
+    }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_election_campaign));
     }
 }

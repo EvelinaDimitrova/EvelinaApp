@@ -17,13 +17,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Name:"
+            android:text="@string/name_label"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/contact_details_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_span="2"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </TableRow>
@@ -35,13 +36,15 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Job:"
+            android:text="@string/contact_job"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/contact_details_job"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_span="2"
+            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </TableRow>
 
@@ -50,13 +53,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Room:"
+            android:text="@string/room_label"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/contact_details_room"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_span="2"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </TableRow>
@@ -66,13 +70,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Hours:"
+            android:text="@string/contact_hours"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/contact_details_hours"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_span="2"
             android:textAppearance="?android:attr/textAppearanceMedium" />
     </TableRow>
@@ -82,13 +87,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Phone:"
+            android:text="@string/contact_phone"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/contact_details_phone"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ImageButton
@@ -96,7 +102,6 @@
             android:layout_width="30dp"
             android:layout_height="30dp"
             android:layout_gravity="right"
-            android:contentDescription="Dail"
             android:src="@drawable/ic_menu_camera" />
     </TableRow>
 
@@ -105,13 +110,14 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Email:"
+            android:text="@string/contact_email"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <TextView
             android:id="@+id/contact_details_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ImageButton
@@ -129,6 +135,6 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_span="3"
-            android:text="Back" />
+            android:text="@string/back_button" />
     </TableRow>
 </TableLayout>

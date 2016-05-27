@@ -9,26 +9,35 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.Toast;
 
+import com.alamkanak.weekview.WeekViewEvent;
 import com.fmi.evelina.unimobileapp.R;
+import com.fmi.evelina.unimobileapp.activity.Calendar.CreateEventActivity;
 import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.NewsListAdapter;
 import com.fmi.evelina.unimobileapp.model.News;
+import com.fmi.evelina.unimobileapp.model.UserRole;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 public class NewsActivity extends DrawerBaseActivity implements CallBack<List<News>> {
+
 
     private NewsListAdapter adapter;
     final List<News> newsList = new ArrayList<>();
     Button btnLoadExtra;
     private final int CHUNK_SIZE = 3;
 
-    public static final String RELOAD_KEY = "reload";
+    //keys for opening the activities for results
+    private static final int NEWS_DETAILS_REQUEST = 1;
+    private static final int CREATE_NEWS_REQUEST = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -41,7 +50,7 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
 
         // Create the Load More... button
         btnLoadExtra = new Button(this);
-        btnLoadExtra.setText("Load More...");
+        btnLoadExtra.setText(R.string.news_load);
         // Adding Load More button to lisview at bottom
         newsListView.addFooterView(btnLoadExtra);
 
@@ -63,29 +72,22 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
             }
         });
 
-        boolean reload = true;
-        Bundle b = getIntent().getExtras();
-        if (b != null) {
-            b.getBoolean(RELOAD_KEY, true);
-        }
-        loadNews(reload);
-
-        //DataAPI.getNews(0, 0, this);
+        loadNews(true);
     }
 
 
     private void loadNews(boolean reload) {
 
-        if (reload){
+        if (reload) {
             newsList.clear();
         }
 
         Integer newsId = null;
-        if(!newsList.isEmpty()) {
+        if (!newsList.isEmpty()) {
             News lastNews = newsList.get(newsList.size() - 1);
             newsId = lastNews.Id;
         }
-        NetworkAPI.getNews(newsId, CHUNK_SIZE, this);
+        ApplicationController.getDataProvider().getNews(newsId, CHUNK_SIZE, this);
 
     }
 
@@ -95,11 +97,11 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
         newsList.addAll(nList);
         adapter.notifyDataSetChanged();
 
-        if(nList.size() < CHUNK_SIZE) {
+        if (nList.size() < CHUNK_SIZE) {
             btnLoadExtra.setVisibility(View.GONE);
         }
 
-        NetworkAPI.getNewsImages(newsList, new CallBack<News>() {
+        ApplicationController.getDataProvider().getNewsImages(newsList, new CallBack<News>() {
             @Override
             public void onSuccess(News data) {
 
@@ -133,7 +135,7 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
         Bundle b = new Bundle();
         b.putInt(NewsDetailsActivity.NEWS_ID_KEY, newsId);
         intent.putExtras(b);
-        startActivity(intent);
+        startActivityForResult(intent, NEWS_DETAILS_REQUEST);
     }
 
     @Override
@@ -141,9 +143,12 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.news, menu);
 
-        if (ApplicationController.getInstance().isLoggedIn() && ApplicationController.getLoggedUser().Role.equals("LECT")) {
-            MenuItem addNews = menu.findItem(R.id.action_create_news);
-            addNews.setVisible(true);
+        if (ApplicationController.getInstance().isLoggedIn()) {
+            UserRole role = ApplicationController.getLoggedUser().Role;
+            if (role.equals(UserRole.LECT) || role.equals(UserRole.ADMN)) {
+                MenuItem addNews = menu.findItem(R.id.action_create_news);
+                addNews.setVisible(true);
+            }
         }
 
         return true;
@@ -155,11 +160,49 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
         switch (id) {
             case R.id.action_create_news:
                 Intent intent = new Intent(NewsActivity.this, CreateNewsActivity.class);
-                startActivity(intent);
+                startActivityForResult(intent, CREATE_NEWS_REQUEST);
                 return true;
         }
         return super.onOptionsItemSelected(item);
     }
 
+    @Override
+    //We expect to get here after opening the Create Event activity for result. This is the callback handler
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == NEWS_DETAILS_REQUEST) {
+            if (resultCode == NewsDetailsActivity.NEWS_DELETED) {
+                //Show an information toast
+                Toast.makeText(NewsActivity.this, R.string.news_deleted, Toast.LENGTH_LONG).show();
 
+                //Get the deleted news ID
+                Bundle b = data.getExtras();
+                int newsID = b.getInt(NewsDetailsActivity.NEWS_ID_KEY);
+
+                //Remove the news from the list
+                Iterator<News> i = newsList.iterator();
+                while (i.hasNext()) {
+                    News news = i.next();
+                    if (news.Id == newsID) {
+                        i.remove();
+                        adapter.notifyDataSetChanged();
+                        break;
+                    }
+                }
+            }
+        }
+        if (requestCode == CREATE_NEWS_REQUEST) {
+            if (resultCode == CreateNewsActivity.NEWS_CREATED) {
+                //Show an information toast
+                Toast.makeText(NewsActivity.this, R.string.news_created, Toast.LENGTH_LONG).show();
+                loadNews(true);
+            }
+        }
+    }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_activity_news));
+    }
 }

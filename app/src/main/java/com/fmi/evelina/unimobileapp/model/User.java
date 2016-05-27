@@ -18,5 +18,5 @@ public class User {
     @Expose @SerializedName("password")
     public String Password;
     @Expose @SerializedName("role")
-    public String Role;
+    public UserRole Role;
 }

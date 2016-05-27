@@ -20,4 +20,11 @@ public class HomeActivity extends DrawerBaseActivity {
         super.onCreate(savedInstanceState);
         setDrawerContentView(R.layout.content_home);
     }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_activity_home));
+    }
 }

@@ -1,5 +1,7 @@
 package com.fmi.evelina.unimobileapp.activity.News;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -19,25 +21,28 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
+import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.model.News;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.io.FileDescriptor;
 import java.io.IOException;
 
 public class CreateNewsActivity extends DrawerBaseActivity {
 
+    public static final int NEWS_CREATED = 1;
     private static int RESULT_LOAD_IMAGE = 1;
-    private static News newsToSave = new News();
+    private static News newsToSave;
 
     private Button buttonLoadImage;
     private Button buttonSaveNews;
+    private Button buttonCancel;
     private EditText title;
     private EditText text;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        newsToSave = new News();
 
         setDrawerContentView(R.layout.content_create_news);
 
@@ -62,18 +67,22 @@ public class CreateNewsActivity extends DrawerBaseActivity {
         buttonSaveNews.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View arg0) {
+
+                if (title.getText().toString().isEmpty()) {
+                    title.setError(getString(R.string.error_field_required));
+                    return;
+                }
+
                 newsToSave.Title = title.getText().toString();
                 newsToSave.Text = text.getText().toString();
 
-                NetworkAPI.addNews(newsToSave,
+
+                ApplicationController.getDataProvider().addNews(newsToSave,
                         new Response.Listener() {
                             @Override
                             public void onResponse(Object response) {
-                                Intent intent = new Intent(CreateNewsActivity.this, NewsActivity.class);
-                                Bundle b = new Bundle();
-                                b.putBoolean(NewsActivity.RELOAD_KEY, true);
-                                intent.putExtras(b);
-                                startActivity(intent);
+                                setResult(NEWS_CREATED);
+                                finish();
                             }
                         },
                         new Response.ErrorListener() {
@@ -85,7 +94,24 @@ public class CreateNewsActivity extends DrawerBaseActivity {
             }
         });
 
-
+        //Set Cancel button handler
+        buttonCancel = (Button) findViewById(R.id.create_news_cancel_button);
+        buttonCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //Show delete confirmation
+                new AlertDialog.Builder(CreateNewsActivity.this)
+                        .setTitle(R.string.confirmation_label)
+                        .setMessage(R.string.confirm_cancel)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(R.string.confirmation_yes, new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                //Go back
+                                finish();
+                            }
+                        }).setNegativeButton(R.string.confirmation_no, null).show();
+            }
+        });
     }
 
     @Override
@@ -142,6 +168,13 @@ public class CreateNewsActivity extends DrawerBaseActivity {
         Bitmap image = BitmapFactory.decodeFileDescriptor(fileDescriptor);
         parcelFileDescriptor.close();
         return image;
+    }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_activity_news_create));
     }
 
 }

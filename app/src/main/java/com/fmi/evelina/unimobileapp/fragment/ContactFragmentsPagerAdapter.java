@@ -6,13 +6,16 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.util.Log;
 
+import com.fmi.evelina.unimobileapp.R;
+
 public class ContactFragmentsPagerAdapter extends FragmentPagerAdapter {
-    private String tabTitles[] = new String[] { "Administration", "Lecturers"};
+    private String tabTitles[];
     private Context context;
 
     public ContactFragmentsPagerAdapter(FragmentManager fm, Context context) {
         super(fm);
         this.context = context;
+        tabTitles = new String[]{context.getString(R.string.contacts_administration), context.getString(R.string.contacts_lecturers)};
     }
 
     @Override
@@ -23,7 +26,7 @@ public class ContactFragmentsPagerAdapter extends FragmentPagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        switch (position){
+        switch (position) {
             case 0: {
                 return new AdministrationContactsFragment();
             }

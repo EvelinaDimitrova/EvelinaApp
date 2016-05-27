@@ -1,5 +1,8 @@
 package com.fmi.evelina.unimobileapp.activity.ElectionCampaign;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -12,21 +15,25 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
+import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCampaign;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCourse;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 public class ElectionCourseActivity extends DrawerBaseActivity implements CallBack<ElectionCourse> {
 
     public static final String COURSE_KEY = "course";
     public static final String CAMPAIGN_KEY = "campaign";
+    public static final String COURSE_ID_KEY = "courseId";
+    public static final int COURSE_ENROLLED = 1;
+    public static final int COURSE_CANCELED = 2;
 
     private static ElectionCampaign currentCampaign;
     private static ElectionCourse currentCourse;
 
     private static Button enrollButton;
     private static Button cancelButton;
+    private static Button backButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,14 +71,18 @@ public class ElectionCourseActivity extends DrawerBaseActivity implements CallBa
 
         enrollButton = (Button) this.findViewById(R.id.election_course_btn_enroll);
         cancelButton = (Button) this.findViewById(R.id.election_course_btn_cancel);
+        backButton = (Button) this.findViewById(R.id.election_course_btn_back);
 
         enrollButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NetworkAPI.enrollCourse(currentCourse.Id,
+                ApplicationController.getDataProvider().enrollCourse(currentCourse.Id,
                         new Response.Listener() {
                             @Override
                             public void onResponse(Object response) {
+                                //Show conformation information
+                                Toast.makeText(ElectionCourseActivity.this, R.string.election_course_enrolled, Toast.LENGTH_LONG).show();
+
                                 currentCourse.Enrolled = true;
                                 UpdateEnrollButton();
                             }
@@ -88,21 +99,42 @@ public class ElectionCourseActivity extends DrawerBaseActivity implements CallBa
         cancelButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                NetworkAPI.cancelCourse(currentCourse.Id,
-                        new Response.Listener() {
-                            @Override
-                            public void onResponse(Object response) {
-                                currentCourse.Enrolled = false;
-                                currentCourse.HasFreeSpaces = true;
-                                UpdateEnrollButton();
+
+                //Show confirmation
+                new AlertDialog.Builder(ElectionCourseActivity.this)
+                        .setTitle(R.string.confirmation_label)
+                        .setMessage(R.string.election_course_cancel_confirm)
+                        .setIcon(android.R.drawable.ic_dialog_alert)
+                        .setPositiveButton(R.string.confirmation_yes, new DialogInterface.OnClickListener() {
+
+                            public void onClick(DialogInterface dialog, int whichButton) {
+                                ApplicationController.getDataProvider().cancelCourse(currentCourse.Id,
+                                        new Response.Listener() {
+                                            @Override
+                                            public void onResponse(Object response) {
+                                                currentCourse.Enrolled = false;
+                                                currentCourse.HasFreeSpaces = true;
+                                                UpdateEnrollButton();
+
+                                                //Show conformation information
+                                                Toast.makeText(ElectionCourseActivity.this, R.string.election_course_cancelled, Toast.LENGTH_LONG).show();
+                                            }
+                                        },
+                                        new Response.ErrorListener() {
+                                            @Override
+                                            public void onErrorResponse(VolleyError error) {
+                                                Toast.makeText(ElectionCourseActivity.this, "Unable to perform operation", Toast.LENGTH_LONG).show();
+                                            }
+                                        });
                             }
-                        },
-                        new Response.ErrorListener() {
-                            @Override
-                            public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(ElectionCourseActivity.this, "Unable to perform operation", Toast.LENGTH_LONG).show();
-                            }
-                        });
+                        }).setNegativeButton(R.string.confirmation_no, null).show();
+            }
+        });
+
+        backButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                goBack();
             }
         });
 
@@ -122,7 +154,7 @@ public class ElectionCourseActivity extends DrawerBaseActivity implements CallBa
         int id = item.getItemId();
         switch (id) {
             case R.id.action_back:
-                finish();
+                goBack();
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -171,5 +203,23 @@ public class ElectionCourseActivity extends DrawerBaseActivity implements CallBa
     @Override
     public void onFail(String msg) {
 
+    }
+
+    private void goBack() {
+        Bundle conData = new Bundle();
+        conData.putInt(COURSE_ID_KEY, currentCourse.Id);
+
+        Intent intent = new Intent();
+        intent.putExtras(conData);
+
+        setResult(currentCourse.Enrolled ? COURSE_ENROLLED : COURSE_CANCELED, intent);
+        finish();
+    }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_election_course));
     }
 }

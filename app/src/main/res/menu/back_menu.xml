@@ -4,6 +4,6 @@
     <item
         android:id="@+id/action_back"
         android:orderInCategory="100"
-        android:title="Back"
+        android:title="@string/back_button"
         app:showAsAction="always" />
 </menu>

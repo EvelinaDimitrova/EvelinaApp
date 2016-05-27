@@ -41,4 +41,34 @@ public final class DataBaseContract {
         public static final String COLUMN_NAME_PROGRAM = "program";
         public static final String COLUMN_NAME_LECTURER = "lecturer";
     }
+
+    /* Inner class that defines the table contents */
+    public static abstract class AdministrationContacts implements BaseColumns {
+        public static final String TABLE_NAME = "administrationContacts";
+        public static final String COLUMN_NAME_CATEGORY = "category";
+        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_JOB = "job";
+        public static final String COLUMN_NAME_PHONE = "phone";
+        public static final String COLUMN_NAME_EMAIL= "email";
+        public static final String COLUMN_NAME_ROOM = "room";
+        public static final String COLUMN_NAME_TIME = "time";
+    }
+
+    /* Inner class that defines the table contents */
+    public static abstract class LecturerContacts implements BaseColumns {
+        public static final String TABLE_NAME = "lecturerContacts";
+        public static final String COLUMN_NAME_NAME = "name";
+        public static final String COLUMN_NAME_DEPARTMENT = "department";
+        public static final String COLUMN_NAME_PHONE = "phone";
+        public static final String COLUMN_NAME_EMAIL= "email";
+        public static final String COLUMN_NAME_ROOM = "room";
+        public static final String COLUMN_NAME_TIME = "time";
+    }
+
+    /* Inner class that defines the table contents */
+    public static abstract class StudentPlan implements BaseColumns {
+        public static final String TABLE_NAME = "studentPlan";
+        public static final String COLUMN_NAME_PLAN = "plan";
+    }
+
 }

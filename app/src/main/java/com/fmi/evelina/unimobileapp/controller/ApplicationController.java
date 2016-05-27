@@ -2,8 +2,11 @@ package com.fmi.evelina.unimobileapp.controller;
 
 import android.app.Application;
 import android.content.Context;
+import android.content.SharedPreferences;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
+import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
 
@@ -12,17 +15,18 @@ import com.android.volley.RequestQueue;
 import com.android.volley.VolleyLog;
 import com.android.volley.toolbox.Volley;
 import com.fmi.evelina.unimobileapp.R;
+import com.fmi.evelina.unimobileapp.activity.SettingsActivity;
 import com.fmi.evelina.unimobileapp.helper.DateDeserializer;
 import com.fmi.evelina.unimobileapp.helper.TimeDeserializer;
-import com.fmi.evelina.unimobileapp.localDB.DataBaseAPI;
 import com.fmi.evelina.unimobileapp.model.User;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.File;
 import java.sql.Time;
-import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Locale;
 
 public class ApplicationController extends Application {
 
@@ -44,16 +48,48 @@ public class ApplicationController extends Application {
     private static Gson _gson;
     private static DataProvider _dataProvider;
 
+    private static String _serverURLPref;
+    private static String _localePref;
+    private static Boolean _sendNetworkModePref;
+
+    public static SimpleDateFormat fullDateTimeFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
+
     public static boolean isLoggedIn() {
         return _user != null;
     }
 
-    public static String getServerURL() {
-        return getInstance().getString(R.string.server_url);
+    public static String getServerURLPref() {
+        return _serverURLPref;
     }
 
-    public static DateFormat dateFormatter = DateFormat.getDateInstance(DateFormat.DEFAULT);
+    public static void setServerURLPref(String url) {
+        ApplicationController._serverURLPref = url;
+    }
 
+    public static Boolean getSendNetworkModePref() {
+        return _sendNetworkModePref;
+    }
+
+    public static void setSendNetworkModePref(Boolean send) {
+        ApplicationController._sendNetworkModePref = send;
+    }
+
+    public static String getLocalePref() {
+        return _localePref;
+    }
+
+    public static void setLocalePref(String _localePref) {
+        ApplicationController._localePref = _localePref;
+        changeLocale();
+    }
+
+    private static void changeLocale() {
+        Configuration config = getInstance().getBaseContext().getResources().getConfiguration();
+        Locale locale = new Locale(getLocalePref());
+        Locale.setDefault(locale);
+        config.locale = locale;
+        getInstance().getBaseContext().getResources().updateConfiguration(config, getInstance().getBaseContext().getResources().getDisplayMetrics());
+    }
 
     @Override
     public void onCreate() {
@@ -70,7 +106,11 @@ public class ApplicationController extends Application {
 
         _dataProvider = new DataProvider(getApplicationContext());
 
-        Log.v("onCreate ", (_sInstance == null ? "true" : "false"));
+        SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
+        _serverURLPref = sharedPref.getString(SettingsActivity.KEY_PREF_SERVER_URL, getString(R.string.pref_default_url));
+        _sendNetworkModePref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_SEND_NETWORK_MODE, true);
+        setLocalePref(sharedPref.getString(SettingsActivity.KEY_PREF_LOCALE, getString(R.string.pref_lang_default)));
+
     }
 
     /**
@@ -156,5 +196,22 @@ public class ApplicationController extends Application {
         return _dataProvider;
     }
 
+    public static boolean hasNetwork() {
+        ConnectivityManager cm = (ConnectivityManager) getInstance().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
 
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        boolean isConnected = activeNetwork != null &&
+                activeNetwork.isConnectedOrConnecting();
+        return isConnected;
+    }
+
+    public static int getNetworkType() {
+        if (hasNetwork()) {
+            ConnectivityManager cm = (ConnectivityManager) getInstance().getApplicationContext().getSystemService(Context.CONNECTIVITY_SERVICE);
+            NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+            return activeNetwork.getType();
+        }
+        return -1;
+
+    }
 }

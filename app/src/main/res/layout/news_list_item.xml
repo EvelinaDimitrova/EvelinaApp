@@ -19,7 +19,7 @@
             android:id="@+id/news_list_item_title"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Title"
+            android:text="@string/title_label"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:layout_marginTop="5dp"
             android:padding="2dp"
@@ -28,7 +28,7 @@
             android:id="@+id/news_list_item_date"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="Date"
+            android:text="@string/date_label"
             android:padding="2dp"/>
 
     </LinearLayout>

@@ -3,6 +3,7 @@ package com.fmi.evelina.unimobileapp.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,10 @@ import android.widget.Spinner;
 
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.Contacts.ContactDetailsActivity;
+import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.LecturersContactsListAdapter;
 import com.fmi.evelina.unimobileapp.model.contacts_model.LecturerContact;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -98,7 +99,7 @@ public class LecturersContactsFragment extends Fragment {
             }
         });
 
-        NetworkAPI.getLecturersContacts(new CallBack<List<LecturerContact>>() {
+        ApplicationController.getDataProvider().getLecturersContacts(new CallBack<List<LecturerContact>>() {
             @Override
             public void onSuccess(List<LecturerContact> data) {
                 contactsList.clear();

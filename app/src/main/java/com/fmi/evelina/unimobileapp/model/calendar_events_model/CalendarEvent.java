@@ -1,29 +1,24 @@
 package com.fmi.evelina.unimobileapp.model.calendar_events_model;
 
-import android.graphics.Color;
-
 import com.alamkanak.weekview.WeekViewEvent;
 import com.fmi.evelina.unimobileapp.helper.EventColorMap;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-
 import java.sql.Time;
-import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 
 /**
  * A Calendar Event model object.
  */
 public class CalendarEvent {
 
+    public int Id;
+
     @Expose
     @SerializedName("id")
-    public int Id;
+    public int DbKey;
 
     @Expose
     @SerializedName("start_time")
@@ -64,33 +59,23 @@ public class CalendarEvent {
 
     public WeekViewEvent getWeekViewEvent() {
 
-        LocalTime startTime = new LocalTime(StartTime);
-        LocalTime endTime = new LocalTime(EndTime);
+        Calendar start = Calendar.getInstance();
+        start.setTime(EventDate);
+        start.set(Calendar.HOUR_OF_DAY, StartTime.getHours());
+        start.set(Calendar.MINUTE,StartTime.getMinutes());
 
-        LocalDate eventDate = new LocalDate(EventDate);
+        Calendar end = Calendar.getInstance();
+        end.setTime(EventDate);
+        end.set(Calendar.HOUR_OF_DAY, EndTime.getHours());
+        end.set(Calendar.MINUTE, EndTime.getMinutes());
 
-
-        //Set the start date and time
-        DateTime startDateTime = new DateTime(eventDate.getYear(),
-                eventDate.getMonthOfYear(),
-                eventDate.getDayOfMonth(),
-                startTime.getHourOfDay(),
-                startTime.getMinuteOfHour(),
-                0);
-        //Set the end date and time
-        DateTime endDateTime = new DateTime(eventDate.getYear(),
-                eventDate.getMonthOfYear(),
-                eventDate.getDayOfMonth(),
-                endTime.getHourOfDay(),
-                endTime.getMinuteOfHour(),
-                0);
 
         //Create a WeekViewEvent for the current date
         WeekViewEvent weekViewEvent = new WeekViewEvent(Id,
                 Abbreviation,
                 Location,
-                startDateTime.toGregorianCalendar(),
-                endDateTime.toGregorianCalendar());
+                start,
+                end);
 
         weekViewEvent.setColor(EventColorMap.getEventColor(TypeCode));
 

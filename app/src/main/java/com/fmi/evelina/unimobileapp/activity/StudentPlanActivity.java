@@ -8,6 +8,7 @@ import android.widget.ListView;
 import android.widget.Spinner;
 
 import com.fmi.evelina.unimobileapp.R;
+import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.CoursesListAdapter;
 import com.fmi.evelina.unimobileapp.helper.adapter.GradesSpinnerAdapter;
 import com.fmi.evelina.unimobileapp.helper.adapter.SemestersSpinnerAdapter;
@@ -16,7 +17,6 @@ import com.fmi.evelina.unimobileapp.model.student_plan_model.Grade;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.Semester;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.StudentPlan;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -44,6 +44,8 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
         gradesSpinnerAdapter = new GradesSpinnerAdapter(StudentPlanActivity.this,
                 android.R.layout.simple_spinner_item,
                 grades);
+        gradesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
         gradesSpinner = (Spinner) findViewById(R.id.grades_spinner);
         gradesSpinner.setAdapter(gradesSpinnerAdapter);
 
@@ -69,6 +71,8 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
         semestersSpinnerAdapter = new SemestersSpinnerAdapter(StudentPlanActivity.this,
                 android.R.layout.simple_spinner_item,
                 semesters);
+        semestersSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+
         semesterSpinner = (Spinner) findViewById(R.id.semester_spinner);
         semesterSpinner.setAdapter(semestersSpinnerAdapter);
 
@@ -92,14 +96,12 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
         ListView coursesListView = (ListView) findViewById(R.id.courses_listView);
         coursesListView.setAdapter(coursesListAdapter);
 
-        NetworkAPI.getStudentPlan(this);
-        //DataAPI.getStudentPlanTest(this);
+        ApplicationController.getDataProvider().getStudentPlan(this);
     }
 
     @Override
     public void onSuccess(StudentPlan data) {
 
-        Log.v("EVE", "data.Grades.size()=" + data.Grades.size());
         studentPlan = data;
         grades.clear();
         grades.addAll(data.Grades);
@@ -110,6 +112,13 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
     @Override
     public void onFail(String msg) {
         Log.v("EVE_TRACE_ERROR", msg);
+    }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_student_plan));
     }
 }
 

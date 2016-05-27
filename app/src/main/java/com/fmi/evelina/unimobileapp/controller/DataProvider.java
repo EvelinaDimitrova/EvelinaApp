@@ -41,7 +41,7 @@ public class DataProvider {
     }
 
     public static void getStudentSchedule(final CallBack<List<RecurringStudentCalendarEvent>> onCallBack) {
-        if (hasNetwork()) {
+        if (ApplicationController.hasNetwork()) {
             networkApi.getStudentSchedule(new CallBack<List<RecurringStudentCalendarEvent>>() {
                 @Override
                 public void onSuccess(List<RecurringStudentCalendarEvent> data) {
@@ -62,7 +62,7 @@ public class DataProvider {
     }
 
     public static void getLecturerSchedule(final CallBack<List<RecurringLecturerCalendarEvent>> onCallBack) {
-        if (hasNetwork()) {
+        if (ApplicationController.hasNetwork()) {
             networkApi.getLecturerSchedule(new CallBack<List<RecurringLecturerCalendarEvent>>() {
                 @Override
                 public void onSuccess(List<RecurringLecturerCalendarEvent> data) {
@@ -83,7 +83,7 @@ public class DataProvider {
     }
 
     public static void getEvents(final CallBack<List<CalendarEvent>> onCallBack) {
-        if (hasNetwork()) {
+        if (ApplicationController.hasNetwork()) {
             networkApi.getEvents(new CallBack<List<CalendarEvent>>() {
                 @Override
                 public void onSuccess(List<CalendarEvent> data) {
@@ -119,8 +119,33 @@ public class DataProvider {
         networkApi.getNewsDetails(newsId, onCallBack);
     }
 
+    public static void addNews(final News newsToSave, final Response.Listener onSuccess, final Response.ErrorListener onError) {
+        networkApi.addNews(newsToSave, onSuccess, onError);
+    }
+
+    public static void deleteNews(final Integer newsId, final String newsImageName, Response.Listener onSuccess, Response.ErrorListener onError) {
+        networkApi.deleteNews(newsId, newsImageName, onSuccess, onError);
+    }
+
     public static void getStudentPlan(final CallBack<StudentPlan> onCallBack) {
-        networkApi.getStudentPlan(onCallBack);
+        if (ApplicationController.hasNetwork()) {
+            networkApi.getStudentPlan(new CallBack<StudentPlan>() {
+                @Override
+                public void onSuccess(StudentPlan data) {
+                    //Copy the retrieved information in a local DB
+                    dataBaseAPI.putStudentPlan(data);
+                    //Pass the result back to the caller
+                    onCallBack.onSuccess(data);
+                }
+
+                @Override
+                public void onFail(String msg) {
+                    onCallBack.onFail(msg);
+                }
+            });
+        } else {
+            dataBaseAPI.getStudentPlan(onCallBack);
+        }
     }
 
     public static void getCurrentElectionCampaign(final CallBack<ElectionCampaign> onCallBack) {
@@ -129,10 +154,6 @@ public class DataProvider {
 
     public static void getElectionCampaignCourses(final CallBack<List<ElectionCourse>> onCallBack) {
         networkApi.getElectionCampaignCourses(onCallBack);
-    }
-
-    public static void addNews(final News newsToSave, final Response.Listener onSuccess, final Response.ErrorListener onError) {
-        networkApi.addNews(newsToSave, onSuccess, onError);
     }
 
     public static void enrollCourse(final Integer courseId, Response.Listener onSuccess, Response.ErrorListener onError) {
@@ -144,24 +165,58 @@ public class DataProvider {
     }
 
     public static void getAdministrationContacts(final CallBack<List<AdministrationCategoryContacts>> onCallBack) {
-        networkApi.getAdministrationContacts(onCallBack);
+        if (ApplicationController.hasNetwork()) {
+            networkApi.getAdministrationContacts(new CallBack<List<AdministrationCategoryContacts>>() {
+                @Override
+                public void onSuccess(List<AdministrationCategoryContacts> data) {
+                    //Copy the retrieved information in a local DB
+                    dataBaseAPI.putAdministrationContacts(data);
+                    //Pass the result back to the caller
+                    onCallBack.onSuccess(data);
+                }
+
+                @Override
+                public void onFail(String msg) {
+                    onCallBack.onFail(msg);
+                }
+            });
+        } else {
+            dataBaseAPI.getAdministrationContacts(onCallBack);
+        }
     }
 
     public static void getLecturersContacts(final CallBack<List<LecturerContact>> onCallBack) {
-        networkApi.getLecturersContacts(onCallBack);
+        if (ApplicationController.hasNetwork()) {
+            networkApi.getLecturersContacts(new CallBack<List<LecturerContact>>() {
+                @Override
+                public void onSuccess(List<LecturerContact> data) {
+                    //Copy the retrieved information in a local DB
+                    dataBaseAPI.putLecturersContacts(data);
+                    //Pass the result back to the caller
+                    onCallBack.onSuccess(data);
+                }
+
+                @Override
+                public void onFail(String msg) {
+                    onCallBack.onFail(msg);
+                }
+            });
+        } else {
+            dataBaseAPI.getLecturersContacts(onCallBack);
+        }
     }
 
     public static void getRooms(final CallBack<List<Room>> onCallBack) {
         networkApi.getRooms(onCallBack);
     }
 
-
-    private static boolean hasNetwork() {
-        ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
-
-        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
-        boolean isConnected = activeNetwork != null &&
-                activeNetwork.isConnectedOrConnecting();
-        return isConnected;
+    public static void createEvent(final CalendarEvent event, Response.Listener onSuccess, Response.ErrorListener onError) {
+        networkApi.createEvent(event, onSuccess, onError);
     }
+
+    public static void deleteEvent(final Integer eventId, Response.Listener onSuccess, Response.ErrorListener onError) {
+        networkApi.deleteEvent(eventId, onSuccess, onError);
+    }
+
+
 }

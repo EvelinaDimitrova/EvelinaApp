@@ -25,6 +25,10 @@ public class ContactData implements Parcelable {
         Time = in.readString();
     }
 
+    public ContactData(){
+
+    }
+
     @Override
     public int describeContents() {
         return 0;

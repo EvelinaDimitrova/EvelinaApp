@@ -1,9 +1,6 @@
 package com.fmi.evelina.unimobileapp.activity;
 
-import android.content.BroadcastReceiver;
-import android.content.Context;
 import android.content.Intent;
-import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -11,7 +8,6 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.MenuItem;
 import android.widget.FrameLayout;
 
@@ -44,18 +40,6 @@ public class DrawerBaseActivity extends AppCompatActivity
 
         enableButtons(navigationView);
 
-        //Handle LogOut message
-        //TODO investigate tis
-//        IntentFilter intentFilter = new IntentFilter();
-//        intentFilter.addAction("com.package.ACTION_LOGOUT");
-//        registerReceiver(new BroadcastReceiver() {
-//            @Override
-//            public void onReceive(Context context, Intent intent) {
-//                Log.d("onReceive", "Logout in progress");
-//                //At this point you should start the login activity and finish this one
-//                finish();
-//            }
-//        }, intentFilter);
     }
 
     @Override
@@ -67,28 +51,6 @@ public class DrawerBaseActivity extends AppCompatActivity
             super.onBackPressed();
         }
     }
-
-//    @Override
-//    public boolean onCreateOptionsMenu(Menu menu) {
-//        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.drawer_base, menu);
-//        return true;
-//    }
-
-//    @Override
-//    public boolean onOptionsItemSelected(MenuItem item) {
-//        // Handle action bar item clicks here. The action bar will
-//        // automatically handle clicks on the Home/Up button, so long
-//        // as you specify a parent activity in AndroidManifest.xml.
-//        int id = item.getItemId();
-//
-//        //noinspection SimplifiableIfStatement
-//        if (id == R.id.action_settings) {
-//            return true;
-//        }
-//
-//        return super.onOptionsItemSelected(item);
-//    }
 
     @SuppressWarnings("StatementWithEmptyBody")
     @Override
@@ -109,12 +71,6 @@ public class DrawerBaseActivity extends AppCompatActivity
             finish();
             ApplicationController.getInstance().setLoggedUser(null);
 
-            /** send a LogOut message**/
-        //TODO investigate this
-//            Intent broadcastIntent = new Intent();
-//            broadcastIntent.setAction("com.package.ACTION_LOGOUT");
-//            sendBroadcast(broadcastIntent);
-
             Intent home = new Intent(this, HomeActivity.class);
             startActivity(home);
         } else if (id == R.id.nav_calendar) {
@@ -128,6 +84,10 @@ public class DrawerBaseActivity extends AppCompatActivity
             startActivity(electionCampaign);
         } else if (id == R.id.nav_contacts) {
             Intent contacts = new Intent(this, ContactsActivity.class);
+            startActivity(contacts);
+        }
+        else if (id == R.id.nav_settings) {
+            Intent contacts = new Intent(this, SettingsActivity.class);
             startActivity(contacts);
         }
 
@@ -149,22 +109,28 @@ public class DrawerBaseActivity extends AppCompatActivity
         navigationView.getMenu().findItem(R.id.learning_section).setVisible(loggedIn);
 
         if (loggedIn) {
-            String userRole = ApplicationController.getLoggedUser().Role;
-            if (userRole.equals("STUD")) {
-                navigationView.getMenu().findItem(R.id.learning_section).setTitle("Learning");
+            switch (ApplicationController.getLoggedUser().Role){
+                case STUD: {
+                    navigationView.getMenu().findItem(R.id.learning_section).setTitle(R.string.drawer_learning_header);
 
-                navigationView.getMenu().findItem(R.id.nav_student_plan).setVisible(true);
-                navigationView.getMenu().findItem(R.id.nav_election_campaign).setVisible(true);
-            }
-            if (userRole.equals("LECT")) {
-                navigationView.getMenu().findItem(R.id.learning_section).setTitle("Teaching");
+                    navigationView.getMenu().findItem(R.id.nav_student_plan).setVisible(true);
+                    navigationView.getMenu().findItem(R.id.nav_election_campaign).setVisible(true);
+                    break;
+                }
+                case LECT: {
+                    navigationView.getMenu().findItem(R.id.learning_section).setTitle(R.string.drawer_teaching_header);
+                    break;
+                }
+                case ADMN: {
+                    navigationView.getMenu().findItem(R.id.learning_section).setTitle(R.string.drawer_administration_header);
+                }
             }
         }
 
 
     }
 
-//    public void setContentView(int layoutResID) {
+    //    public void setContentView(int layoutResID) {
 //        DrawerLayout mDrawerLayout = (DrawerLayout) getLayoutInflater().inflate(R.layout.activity_drawer_base, null);
 //        FrameLayout actContent = (FrameLayout) mDrawerLayout.findViewById(R.id.frame_container);
 //        // set the drawer layout as main content view of Activity.

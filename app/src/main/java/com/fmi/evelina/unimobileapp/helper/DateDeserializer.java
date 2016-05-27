@@ -1,5 +1,7 @@
 package com.fmi.evelina.unimobileapp.helper;
 
+import android.util.Log;
+
 import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
@@ -26,12 +28,13 @@ public class DateDeserializer implements JsonDeserializer<Date>, JsonSerializer<
     public Date deserialize(JsonElement jsonElement, Type typeOF,
                             JsonDeserializationContext context) throws JsonParseException {
         try {
-            return new SimpleDateFormat(DATE_FORMAT_SHORT, Locale.US).parse(jsonElement.getAsString());
+            Log.v("Eve_trace", "before = " + jsonElement.getAsString());
+            return new SimpleDateFormat(DATE_FORMAT_LONG).parse(jsonElement.getAsString());
         } catch (ParseException e) {
         }
 
         throw new JsonParseException("Unparseable date: \"" + jsonElement.getAsString()
-                + "\". Supported formats: " + DATE_FORMAT_SHORT);
+                + "\". Supported formats: " + DATE_FORMAT_LONG);
     }
 
     @Override

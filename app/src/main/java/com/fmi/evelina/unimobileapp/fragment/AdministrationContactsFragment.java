@@ -14,11 +14,11 @@ import android.widget.Spinner;
 
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.Contacts.ContactDetailsActivity;
+import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.AdministrationContactsListAdapter;
-import com.fmi.evelina.unimobileapp.model.contacts_model.AdministrationContactData;
 import com.fmi.evelina.unimobileapp.model.contacts_model.AdministrationCategoryContacts;
+import com.fmi.evelina.unimobileapp.model.contacts_model.AdministrationContactData;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -41,7 +41,6 @@ public class AdministrationContactsFragment extends Fragment {
 
     private void updateDisplayedContacts() {
         String selectedCat = categorySpinner.getSelectedItem().toString();
-        Log.v("EVE_TRACE","updateDisplayedContacts" + selectedCat);
         if (contactsList.containsKey(selectedCat)){
             displayList.clear();
             displayList.addAll(contactsList.get(selectedCat));
@@ -55,7 +54,7 @@ public class AdministrationContactsFragment extends Fragment {
         categories.clear();
         categories.addAll(contactsList.keySet());
 
-        ArrayAdapter<String> adapter =  new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> adapter =  new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
 
@@ -98,9 +97,10 @@ public class AdministrationContactsFragment extends Fragment {
             }
         });
 
-        NetworkAPI.getAdministrationContacts(new CallBack<List<AdministrationCategoryContacts>>() {
+        ApplicationController.getDataProvider().getAdministrationContacts(new CallBack<List<AdministrationCategoryContacts>>() {
             @Override
             public void onSuccess(List<AdministrationCategoryContacts> data) {
+                Log.v("EVE_TRACE","sizeA="+ data.size());
                 for (AdministrationCategoryContacts cont : data) {
                     contactsList.put(cont.Category, cont.Contacts);
                 }

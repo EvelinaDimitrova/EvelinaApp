@@ -1,6 +1,7 @@
 package com.fmi.evelina.unimobileapp.network;
 
 import android.graphics.Bitmap;
+import android.net.ConnectivityManager;
 import android.util.Base64;
 import android.util.Log;
 
@@ -13,6 +14,7 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.JsonRequest;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
+import com.fmi.evelina.unimobileapp.model.UserRole;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.CalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringLecturerCalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringStudentCalendarEvent;
@@ -26,12 +28,10 @@ import com.fmi.evelina.unimobileapp.model.student_plan_model.StudentPlan;
 import com.fmi.evelina.unimobileapp.model.User;
 import com.google.gson.Gson;
 
-import org.joda.time.LocalDate;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.sql.Time;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -42,15 +42,18 @@ import java.util.Map;
  */
 public class NetworkAPI {
 
-    private static final String URLRoot = ApplicationController.getServerURL();
-    private static final Gson gson = ApplicationController.getGson();
+    private static String getURLRoot() {
+        return ApplicationController.getServerURLPref();
+    }
 
+    private static final Gson gson = ApplicationController.getGson();
+    private static final String NETWORK_MODE_HEADER_KEY = "NetworkMode";
+    private static final String NETWORK_MODE_COMPACT_KEY = "Compact";
+    private static final String NETWORK_MODE_FULL_KEY = "Full";
 
     public static void signIn(final String userId, final String password, final CallBack<User> onCallBack) {
 
-        String URL = URLRoot + "/signIn";
-
-        final HashMap<String, String> authHeader = getAuthenticationHeader(userId, password);
+        String URL = getURLRoot() + "/user";
 
         JsonRequest req = new JsonObjectRequest(URL, new Response.Listener<JSONObject>() {
             @Override
@@ -69,16 +72,18 @@ public class NetworkAPI {
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("FMI_APP_EXCEPTION", error.getMessage());
-                onCallBack.onFail(error.getMessage());
+                onCallBack.onFail("Unable to log in.");
             }
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
+                Map<String, String> result = new HashMap<>();
+                HashMap<String, String> authHeader = getAuthenticationHeader(userId, password);
                 if (authHeader != null && !authHeader.isEmpty()) {
-                    return authHeader;
+                    result.putAll(authHeader);
                 }
-                return super.getHeaders();
+                addNetworkModeHeader(result);
+                return result;
             }
         };
 
@@ -87,95 +92,39 @@ public class NetworkAPI {
         ApplicationController.getInstance().addToRequestQueue(req);
     }
 
-    //TODO remove this mock method
-    public static void signInTest(final String userId, final String password, final CallBack<User> onCallBack) {
-
-        onCallBack.onSuccess(new User(userId, password));
-        return;
-    }
-
     public static void getStudentSchedule(final CallBack<List<RecurringStudentCalendarEvent>> onCallBack) {
         User loggedUser = ApplicationController.getLoggedUser();
-        if (loggedUser != null && loggedUser.Role.equals("STUD")) {
-            String URL = URLRoot + "/schedule?role=" + loggedUser.Role;
+        if (loggedUser != null && loggedUser.Role.equals(UserRole.STUD)) {
+            String URL = getURLRoot() + "/schedule?role=" + loggedUser.Role;
             makeJsonArrayRequest(RecurringStudentCalendarEvent.class, URL, true, onCallBack);
         } else {
             onCallBack.onFail("Unable to retrieve data");
         }
     }
 
-    public static void getStudentScheduleTest(final CallBack<List<RecurringStudentCalendarEvent>> onCallBack) {
-        List<RecurringStudentCalendarEvent> result = new ArrayList<>();
-        RecurringStudentCalendarEvent re = new RecurringStudentCalendarEvent();
-
-        LocalDate start = new LocalDate(2016, 1, 1);
-        LocalDate end = new LocalDate(2016, 9, 9);
-        re.StartDate = start.toDate();
-        re.StartTime = new Time(12, 00, 00);
-
-        re.EndDate = end.toDate();
-        re.EndTime = new Time(13, 00, 00);
-
-        re.Location = "101";
-        re.Abbreviation = "AN";
-        re.IsElective = 'N';
-        re.Lecturer = "ASD";
-        re.WeekDay = 3;
-        re.TypeCode = "LECT";
-
-        result.add(re);
-
-        onCallBack.onSuccess(result);
-
-    }
-
     public static void getLecturerSchedule(final CallBack<List<RecurringLecturerCalendarEvent>> onCallBack) {
         User loggedUser = ApplicationController.getLoggedUser();
-        if (loggedUser != null && loggedUser.Role.equals("LECT")) {
-            String URL = URLRoot + "/schedule?role=" + loggedUser.Role;
+        if (loggedUser != null && loggedUser.Role.equals(UserRole.LECT)) {
+            String URL = getURLRoot() + "/schedule?role=" + loggedUser.Role;
             makeJsonArrayRequest(RecurringLecturerCalendarEvent.class, URL, true, onCallBack);
         } else {
             onCallBack.onFail("Unable to retrieve data");
         }
     }
 
-    public static void getLecturerScheduleTest(final CallBack<List<RecurringLecturerCalendarEvent>> onCallBack) {
-        List<RecurringLecturerCalendarEvent> result = new ArrayList<>();
-        RecurringLecturerCalendarEvent re = new RecurringLecturerCalendarEvent();
-
-        LocalDate start = new LocalDate(2016, 1, 1);
-        LocalDate end = new LocalDate(2016, 9, 9);
-        re.StartDate = start.toDate();
-        re.StartTime = new Time(12, 00, 00);
-
-        re.EndDate = end.toDate();
-        re.EndTime = new Time(13, 00, 00);
-
-        re.Location = "101";
-        re.Abbreviation = "AN";
-        re.Program = "SoftInj";
-        re.WeekDay = 3;
-        re.TypeCode = "LECT";
-
-        result.add(re);
-
-        onCallBack.onSuccess(result);
-
-    }
-
     public static void getEvents(final CallBack<List<CalendarEvent>> onCallBack) {
-        String URL = URLRoot + "/schedule/events";
+        String URL = getURLRoot() + "/schedule/events";
         makeJsonArrayRequest(CalendarEvent.class, URL, false, onCallBack);
     }
 
     public static void getNews(final Integer newsId, final int chunkSize, final CallBack<List<News>> onCallBack) {
-        String URL = URLRoot + "/news?newsId=" + newsId + "&chunkSize=" + chunkSize;
+        String URL = getURLRoot() + "/news?newsId=" + newsId + "&chunkSize=" + chunkSize;
         makeJsonArrayRequest(News.class, URL, false, onCallBack);
     }
 
     public static void getNewsImage(final News news, final CallBack<News> onCallBack) {
 
-        String imageURL = URLRoot + "/images/" + news.ImageName;
+        String imageURL = getURLRoot() + "/images/" + news.ImageName;
 
         getImage(imageURL, new CallBack<Bitmap>() {
             @Override
@@ -201,66 +150,12 @@ public class NetworkAPI {
     }
 
     public static void getNewsDetails(final int newsId, final CallBack<News> onCallBack) {
-        String URL = URLRoot + "/news/" + newsId;
+        String URL = getURLRoot() + "/news/" + newsId;
         makeJsonObjectRequest(News.class, URL, false, onCallBack);
     }
 
-    public static void getStudentPlan(final CallBack<StudentPlan> onCallBack) {
-        String URL = URLRoot + "/studentPlan";
-        makeJsonObjectRequest(StudentPlan.class, URL, true, onCallBack);
-    }
-
-    public static void getCurrentElectionCampaign(final CallBack<ElectionCampaign> onCallBack) {
-        String URL = URLRoot + "/electivesCampaign";
-        makeJsonObjectRequest(ElectionCampaign.class, URL, false, onCallBack);
-    }
-
-    public static void getElectionCampaignCourses(final CallBack<List<ElectionCourse>> onCallBack) {
-        User loggedUser = ApplicationController.getLoggedUser();
-
-        if (loggedUser != null) {
-            String URL = URLRoot + "/electivesCampaign/courses";
-            makeJsonArrayRequest(ElectionCourse.class, URL, true, onCallBack);
-        } else {
-            onCallBack.onFail("Unable to retrieve data");
-        }
-    }
-
-    public static void getElectionCampaignCoursesTest(final CallBack<List<ElectionCourse>> onCallBack) {
-        List<ElectionCourse> res = new ArrayList<>();
-
-        ElectionCourse ec = new ElectionCourse();
-        ec.Name = "Name";
-        ec.Category = "ЯКН";
-        ec.Description = "Desc1";
-        ec.IsForMyProgram = true;
-        ec.IsForMyGrade = true;
-        ec.Credits = 5.0;
-        res.add(ec);
-
-        ElectionCourse ec0 = new ElectionCourse();
-        ec0.Name = "Name0";
-        ec0.Description = "Desc2";
-        ec0.Category = "ЯКН0";
-        ec0.IsForMyProgram = false;
-        ec0.IsForMyGrade = false;
-        ec0.Credits = 5.0;
-        res.add(ec0);
-
-        ElectionCourse ec2 = new ElectionCourse();
-        ec2.Name = "Name2";
-        ec2.Description = "Desc3";
-        ec2.Category = "КН";
-        ec2.Credits = 5.0;
-        ec2.IsForMyProgram = true;
-        ec2.IsForMyGrade = false;
-        res.add(ec2);
-
-        onCallBack.onSuccess(res);
-    }
-
     public static void addNews(final News newsToSave, final Response.Listener onSuccess, final Response.ErrorListener onError) {
-        String urlAddNews = URLRoot + "/news/add";
+        String urlAddNews = getURLRoot() + "/news";
         News temp = new News();
         temp.Text = newsToSave.Text;
         temp.Title = newsToSave.Title;
@@ -274,33 +169,38 @@ public class NetworkAPI {
                 newsToSave.Id = data.Id;
 
                 if (newsToSave.Image != null) {
-                    try {
-                        String urlAddNewsImage = URLRoot + "/news/add/image?newsId=" + newsToSave.Id;
-                        //Store the image
-                        PostPhotoRequest imageUploadReq = new PostPhotoRequest(urlAddNewsImage,
-                                new Response.ErrorListener() {
-                                    @Override
-                                    public void onErrorResponse(VolleyError error) {
-                                        onError.onErrorResponse(error);
-                                    }
-                                },
-                                new Response.Listener() {
-                                    @Override
-                                    public void onResponse(Object response) {
-                                        onSuccess.onResponse(response);
-                                    }
-                                },
-                                newsToSave.getImageFile());
+                    String urlAddNewsImage = getURLRoot() + "/news/image?newsId=" + newsToSave.Id;
+                    //Store the image
+                    PostPhotoRequest imageUploadReq = new PostPhotoRequest(urlAddNewsImage,
+                            new Response.ErrorListener() {
+                                @Override
+                                public void onErrorResponse(VolleyError error) {
+                                    onError.onErrorResponse(error);
+                                }
+                            },
+                            new Response.Listener() {
+                                @Override
+                                public void onResponse(Object response) {
+                                    onSuccess.onResponse(response);
+                                }
+                            },
+                            newsToSave.getImageFile()) {
+                        @Override
+                        public Map<String, String> getHeaders() throws AuthFailureError {
+                            Map<String, String> headers = new HashMap<>();
+
+                            //Add authentication header
+                            addAuthenticationHeader(headers);
+                            //Add network headers
+                            addNetworkModeHeader(headers);
+
+                            return headers;
+                        }
+                    };
+
+                    ApplicationController.getInstance().addToRequestQueue(imageUploadReq);
 
 
-                        //Add authentication header
-                        imageUploadReq.getHeaders().putAll(getAuthenticationHeader());
-
-                        ApplicationController.getInstance().addToRequestQueue(imageUploadReq);
-
-                    } catch (AuthFailureError authFailureError) {
-                        authFailureError.printStackTrace();
-                    }
                 } else {
                     onSuccess.onResponse(null);
                 }
@@ -313,15 +213,74 @@ public class NetworkAPI {
         });
     }
 
+    public static void deleteNews(final Integer newsId, final String imageName, final Response.Listener onSuccess, final Response.ErrorListener onError) {
+
+        String URL = getURLRoot() + "/news/" + newsId;
+
+        HashMap<String, String> headers = new HashMap<>();
+
+        //Add authentication header
+        addAuthenticationHeader(headers);
+        //Add network headers
+        addNetworkModeHeader(headers);
+
+        ServerStatusRequest req = new ServerStatusRequest(Request.Method.DELETE,
+                URL,
+                headers,
+                "",
+                new Response.Listener() {
+                    @Override
+                    public void onResponse(Object response) {
+                        //If the news has Image make a call to delete it
+                        if (imageName != null) {
+                            deleteImage(imageName, onSuccess, onError);
+                        }
+                        else{
+                            onSuccess.onResponse(response);
+                        }
+                    }
+                },
+                onError);
+
+        // add the request object to the queue to be executed
+        ApplicationController.getInstance().addToRequestQueue(req);
+    }
+
+    public static void getStudentPlan(final CallBack<StudentPlan> onCallBack) {
+        String URL = getURLRoot() + "/studentPlan";
+        makeJsonObjectRequest(StudentPlan.class, URL, true, onCallBack);
+    }
+
+    public static void getCurrentElectionCampaign(final CallBack<ElectionCampaign> onCallBack) {
+        String URL = getURLRoot() + "/electivesCampaign";
+        makeJsonObjectRequest(ElectionCampaign.class, URL, false, onCallBack);
+    }
+
+    public static void getElectionCampaignCourses(final CallBack<List<ElectionCourse>> onCallBack) {
+        User loggedUser = ApplicationController.getLoggedUser();
+
+        if (loggedUser != null) {
+            String URL = getURLRoot() + "/electivesCampaign/courses";
+            makeJsonArrayRequest(ElectionCourse.class, URL, true, onCallBack);
+        } else {
+            onCallBack.onFail("Unable to retrieve data");
+        }
+    }
+
     public static void enrollCourse(final Integer courseId, Response.Listener onSuccess, Response.ErrorListener onError) {
 
-        String URL = URLRoot + "/electivesCampaign/courses/enroll?courseId=" + courseId;
+        String URL = getURLRoot() + "/electivesCampaign/courses/enroll?courseId=" + courseId;
 
-        HashMap<String, String> authHeader = getAuthenticationHeader();
+        HashMap<String, String> headers = new HashMap<>();
+
+        //Add authentication header
+        addAuthenticationHeader(headers);
+        //Add network headers
+        addNetworkModeHeader(headers);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.POST,
                 URL,
-                authHeader,
+                headers,
                 "",
                 onSuccess,
                 onError);
@@ -332,13 +291,18 @@ public class NetworkAPI {
 
     public static void cancelCourse(final Integer courseId, Response.Listener onSuccess, Response.ErrorListener onError) {
 
-        String URL = URLRoot + "/electivesCampaign/courses/cancel?courseId=" + courseId;
+        String URL = getURLRoot() + "/electivesCampaign/courses/cancel?courseId=" + courseId;
 
-        HashMap<String, String> authHeader = getAuthenticationHeader();
+        HashMap<String, String> headers = new HashMap<>();
+
+        //Add authentication header
+        addAuthenticationHeader(headers);
+        //Add network headers
+        addNetworkModeHeader(headers);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.POST,
                 URL,
-                authHeader,
+                headers,
                 "",
                 onSuccess,
                 onError);
@@ -348,29 +312,33 @@ public class NetworkAPI {
     }
 
     public static void getAdministrationContacts(final CallBack<List<AdministrationCategoryContacts>> onCallBack) {
-        String URL = URLRoot + "/contacts/administration";
+        String URL = getURLRoot() + "/contacts/administration";
         makeJsonArrayRequest(AdministrationCategoryContacts.class, URL, false, onCallBack);
     }
 
     public static void getLecturersContacts(final CallBack<List<LecturerContact>> onCallBack) {
-        String URL = URLRoot + "/contacts/lecturers";
+        String URL = getURLRoot() + "/contacts/lecturers";
         makeJsonArrayRequest(LecturerContact.class, URL, false, onCallBack);
     }
 
     public static void getRooms(final CallBack<List<Room>> onCallBack) {
-        String URL = URLRoot + "/schedule/events/rooms";
+        String URL = getURLRoot() + "/schedule/events/rooms";
         makeJsonArrayRequest(Room.class, URL, false, onCallBack);
     }
 
     public static void createEvent(final CalendarEvent event, Response.Listener onSuccess, Response.ErrorListener onError) {
 
-        String URL = URLRoot + "/schedule/events";
+        String URL = getURLRoot() + "/schedule/events";
+
+        HashMap<String, String> headers = new HashMap<>();
+        //Add network headers
+        addNetworkModeHeader(headers);
 
         String requestBody = gson.toJson(event);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.POST,
                 URL,
-                null,
+                headers,
                 requestBody,
                 onSuccess,
                 onError);
@@ -379,6 +347,27 @@ public class NetworkAPI {
         ApplicationController.getInstance().addToRequestQueue(req);
     }
 
+    public static void deleteEvent(final Integer eventId, Response.Listener onSuccess, Response.ErrorListener onError) {
+
+        String URL = getURLRoot() + "/schedule/events/" + eventId;
+
+        HashMap<String, String> headers = new HashMap<>();
+
+        //Add authentication header
+        addAuthenticationHeader(headers);
+        //Add network headers
+        addNetworkModeHeader(headers);
+
+        ServerStatusRequest req = new ServerStatusRequest(Request.Method.DELETE,
+                URL,
+                headers,
+                "",
+                onSuccess,
+                onError);
+
+        // add the request object to the queue to be executed
+        ApplicationController.getInstance().addToRequestQueue(req);
+    }
 
     private static void getImage(final String url, final CallBack<Bitmap> onCallBack) {
 
@@ -395,13 +384,32 @@ public class NetworkAPI {
                         //mImageView.setImageResource(R.drawable.image_load_error);
                     }
                 });
+
         ApplicationController.getInstance().addToRequestQueue(request);
     }
 
-    private static HashMap<String, String> getAuthenticationHeader() {
+    private static void deleteImage(final String imageName, Response.Listener onSuccess, Response.ErrorListener onError) {
+        String URL = getURLRoot() + "/images/" + imageName;
 
-        //TODO add the real user credentials in the header
-        //return getAuthenticationHeader("student1", "s1");
+        HashMap<String, String> headers = new HashMap<>();
+
+        //Add authentication header
+        addAuthenticationHeader(headers);
+        //Add network headers
+        addNetworkModeHeader(headers);
+
+        ServerStatusRequest req = new ServerStatusRequest(Request.Method.DELETE,
+                URL,
+                headers,
+                "",
+                onSuccess,
+                onError);
+
+        // add the request object to the queue to be executed
+        ApplicationController.getInstance().addToRequestQueue(req);
+    }
+
+    private static HashMap<String, String> getAuthenticationHeader() {
 
         User loggedUser = ApplicationController.getLoggedUser();
         if (loggedUser != null) {
@@ -417,6 +425,25 @@ public class NetworkAPI {
         return res;
     }
 
+    private static void addNetworkModeHeader(Map header) {
+        if (ApplicationController.getSendNetworkModePref()) {
+            int networkType = ApplicationController.getNetworkType();
+            if (networkType == ConnectivityManager.TYPE_WIFI) {
+                //If connected to WiFi request for full content
+                header.put(NETWORK_MODE_HEADER_KEY, NETWORK_MODE_FULL_KEY);
+            } else {
+                header.put(NETWORK_MODE_HEADER_KEY, NETWORK_MODE_COMPACT_KEY);
+            }
+        }
+    }
+
+    private static void addAuthenticationHeader(Map header) {
+        Map<String, String> authHeader = getAuthenticationHeader();
+        if (authHeader != null && !authHeader.isEmpty()) {
+            header.putAll(authHeader);
+        }
+    }
+
     private static String getB64Auth(String login, String pass) {
         String source = login + ":" + pass;
         String ret = "Basic " + Base64.encodeToString(source.getBytes(), Base64.URL_SAFE | Base64.NO_WRAP);
@@ -424,10 +451,6 @@ public class NetworkAPI {
     }
 
     private static <T> void makeJsonObjectRequest(final Class<T> typeParameterClass, final String url, final int method, String requestBody, final boolean addAuthHeader, final CallBack<T> onCallBack) {
-        final HashMap<String, String> authHeader = new HashMap<>();
-        if (addAuthHeader) {
-            authHeader.putAll(getAuthenticationHeader());
-        }
 
         JsonRequest req = new JsonObjectRequest(method, url, requestBody, new Response.Listener<JSONObject>() {
             @Override
@@ -452,10 +475,12 @@ public class NetworkAPI {
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                if (addAuthHeader && authHeader != null && !authHeader.isEmpty()) {
-                    return authHeader;
+                Map<String, String> headers = new HashMap<>();
+                if (addAuthHeader) {
+                    addAuthenticationHeader(headers);
                 }
-                return super.getHeaders();
+                addNetworkModeHeader(headers);
+                return headers;
             }
         };
 
@@ -468,10 +493,6 @@ public class NetworkAPI {
 
     private static <T> void makeJsonArrayRequest(final Class<T> typeParameterClass, final String url, final boolean addAuthHeader, final CallBack<List<T>> onCallBack) {
         final Class<T> classType = typeParameterClass;
-        final HashMap<String, String> authHeader = new HashMap<>();
-        if (addAuthHeader) {
-            authHeader.putAll(getAuthenticationHeader());
-        }
 
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url,
                 new Response.Listener<JSONArray>() {
@@ -510,12 +531,20 @@ public class NetworkAPI {
         }) {
             @Override
             public Map<String, String> getHeaders() throws AuthFailureError {
-                if (addAuthHeader && authHeader != null && !authHeader.isEmpty()) {
-                    return authHeader;
+                Map headers = new HashMap();
+                if (addAuthHeader) {
+                    addAuthenticationHeader(headers);
                 }
-                return super.getHeaders();
+                addNetworkModeHeader(headers);
+                return headers;
             }
         };
+
+        try {
+            Log.v("Eve_trace", "headers_count=" + req.getHeaders().size());
+        } catch (AuthFailureError authFailureError) {
+            authFailureError.printStackTrace();
+        }
 
         // add the request object to the queue to be executed
         ApplicationController.getInstance().addToRequestQueue(req);

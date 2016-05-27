@@ -20,13 +20,12 @@ import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.fragment.ViewCalendarEvent;
-import com.fmi.evelina.unimobileapp.localDB.DataBaseAPI;
+import com.fmi.evelina.unimobileapp.model.UserRole;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.CalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringCalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringLecturerCalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringStudentCalendarEvent;
 import com.fmi.evelina.unimobileapp.network.CallBack;
-import com.fmi.evelina.unimobileapp.network.NetworkAPI;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -41,9 +40,7 @@ import java.util.Locale;
     This is the code-behind for the Calendar Activity. It contains the WeekView control and the logic to populate it.
  */
 public class CalendarActivity extends DrawerBaseActivity implements WeekView.EventClickListener,
-        MonthLoader.MonthChangeListener,
-        WeekView.EventLongPressListener,
-        WeekView.EmptyViewLongPressListener {
+        MonthLoader.MonthChangeListener, ICalendarActivity {
     private static final int TYPE_DAY_VIEW = 1;
     private static final int TYPE_THREE_DAY_VIEW = 2;
     private static final int TYPE_WEEK_VIEW = 3;
@@ -63,10 +60,11 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
     boolean calledNetwork = false;
     boolean showRecurringEvents;
     boolean showEvents;
-    private static String userRole;
+    private static UserRole userRole;
 
     //A key for opening the Create Events activity for results
     private static final int CREATE_EVENT_REQUEST = 1;  // The create event request code
+    public static final int DIALOG_FRAGMENT = 1;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,12 +85,6 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
         // month every time the month changes on the week view.
         mWeekView.setMonthChangeListener(this);
 
-        // Set long press listener for events.
-        mWeekView.setEventLongPressListener(this);
-
-        // Set long press listener for empty view
-        mWeekView.setEmptyViewLongPressListener(this);
-
         // Set up a date time interpreter to interpret how the date and time will be formatted in
         // the week view. This is optional.
         setupDateTimeInterpreter(false);
@@ -107,9 +99,8 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
     //Set the correct state of the Add Event button and set the onClick listener
     private void updateAddEventButton() {
         if (ApplicationController.isLoggedIn()) {
-            String userRole = ApplicationController.getLoggedUser().Role;
-            //If the logged user is Lecturer
-            if (userRole.equals("LECT")) {
+            //If the logged user is Administrator or Lecturer
+            if (userRole.equals(UserRole.ADMN) || userRole.equals(UserRole.LECT)) {
                 FloatingActionButton addEventButton = (FloatingActionButton) findViewById(R.id.add_calendar_event_button);
                 //Set the button Visibility
                 addEventButton.setVisibility(View.VISIBLE);
@@ -131,12 +122,12 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
     //We expect to get here after opening the Create Event activity for result. This is the callback handler
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == CREATE_EVENT_REQUEST) {
-            if (resultCode == RESULT_OK) {
+            if (resultCode == CreateEventActivity.EVENT_SAVED) {
                 //Show an information toast
-                Toast.makeText(CalendarActivity.this, "Event successfully saved.", Toast.LENGTH_LONG).show();
+                Toast.makeText(CalendarActivity.this, R.string.calendar_event_saved, Toast.LENGTH_LONG).show();
 
                 // The event was saved so update the display data
-                NetworkAPI.getEvents(new GetEventsCallback());
+                ApplicationController.getDataProvider().getEvents(new GetEventsCallback());
 
                 //Go to the event date/time
                 try {
@@ -146,10 +137,9 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
                     Date date = dateFormat.parse(b.getString(CreateEventActivity.EVENT_DATE_KEY));
                     int hour = b.getInt(CreateEventActivity.EVENT_HOUR_KEY);
                     cal.set(date.getYear(), date.getMonth(), date.getDay(), hour, 0);
-                    Log.v("EVE_TRACE", cal.toString());
-//TODO fix dates
-//                    mWeekView.goToDate(cal);
-//                    mWeekView.goToHour(hour);
+                    //TODO fix dates
+                    //mWeekView.goToDate(cal);
+                    //mWeekView.goToHour(hour);
                 } catch (ParseException e) {
                     e.printStackTrace();
                 } catch (Exception e) {
@@ -167,6 +157,11 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
 
         showEvents = (menu.findItem(R.id.cbShowEvents)).isChecked();
         showRecurringEvents = (menu.findItem(R.id.cbShowScheduledEvents)).isChecked();
+
+        if (userRole.equals(UserRole.ADMN)) {
+            menu.setGroupVisible(R.id.calendar_menu_filter_group, false);
+            showEvents = true;
+        }
 
         return true;
     }
@@ -347,18 +342,6 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
         //Toast.makeText(this, "Clicked " + event.getName(), Toast.LENGTH_SHORT).show();
     }
 
-    @Override
-    //TODO remove this
-    public void onEventLongPress(WeekViewEvent event, RectF eventRect) {
-        //Toast.makeText(this, "Long pressed event: " + event.getName(), Toast.LENGTH_SHORT).show();
-    }
-
-    @Override
-    //TODO remove this
-    public void onEmptyViewLongPress(Calendar time) {
-        //Toast.makeText(this, "Empty view long pressed: " + getEventTitle(time), Toast.LENGTH_SHORT).show();
-    }
-
     public WeekView getWeekView() {
         return mWeekView;
     }
@@ -376,12 +359,10 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
             calendarEvents.clear();
 
             //Call different procedure to ger recurring events depending on the user role
-            if (userRole.equals("STUD")) {
-                //DataAPI.getStudentScheduleTest(new GetStudentSchedulerCallback());
+            if (userRole.equals(UserRole.STUD)) {
                 ApplicationController.getDataProvider().getStudentSchedule(new GetStudentSchedulerCallback());
             }
-            if (userRole.equals("LECT")) {
-                //DataAPI.getLecturerScheduleTest(new GetLecturerSchedulerCallback());
+            if (userRole.equals(UserRole.LECT)) {
                 ApplicationController.getDataProvider().getLecturerSchedule(new GetLecturerSchedulerCallback());
             }
 
@@ -428,14 +409,14 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
 
             if (ev != null) {
                 // Create and show the dialog.
-                if (userRole.equals("STUD")) {
+                if (userRole.equals(UserRole.STUD)) {
                     RecurringStudentCalendarEvent se = (RecurringStudentCalendarEvent) ev;
                     if (se != null) {
                         DialogFragment newFragment = ViewCalendarEvent.newInstance(se);
                         newFragment.show(getFragmentManager(), "dialog");
                         return;
                     }
-                } else if (userRole.equals("LECT")) {
+                } else if (userRole.equals(UserRole.LECT)) {
                     RecurringLecturerCalendarEvent le = (RecurringLecturerCalendarEvent) ev;
                     if (le != null) {
                         DialogFragment newFragment = ViewCalendarEvent.newInstance(le);
@@ -464,6 +445,24 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
         }
 
         Toast.makeText(this, "Unable to find event", Toast.LENGTH_LONG).show();
+
+    }
+
+    @Override
+    public void onEventDeleted(long eventId) {
+        //Show an information toast
+        Toast.makeText(this, R.string.calendar_event_deleted, Toast.LENGTH_LONG).show();
+
+        //Remove the event from the calendar
+        Iterator<WeekViewEvent> i = weekViewEvents.iterator();
+        while (i.hasNext()) {
+            WeekViewEvent weekViewEvent = i.next();
+            if (weekViewEvent.getId() == eventId) {
+                i.remove();
+                getWeekView().notifyDatasetChanged();
+                break;
+            }
+        }
 
     }
 
@@ -521,7 +520,6 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
                 }
             }
 
-            Log.v("EVE_TRACE_SIZE", "" + events.size());
             getWeekView().notifyDatasetChanged();
         }
 
@@ -555,5 +553,12 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
         public void onFail(String msg) {
             Toast.makeText(CalendarActivity.this, msg, Toast.LENGTH_SHORT).show();
         }
+    }
+
+    //Reset the title
+    @Override
+    protected void onResume() {
+        super.onResume();
+        this.setTitle(getString(R.string.title_activity_calendar));
     }
 }

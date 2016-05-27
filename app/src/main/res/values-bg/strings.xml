@@ -1,0 +1,148 @@
+<resources>
+    <string name="app_name">UniMobileApp BG*</string>
+    <!--<string name="server_url">http://b1b5043e.ngrok.io</string>-->
+
+    <!-- Strings related to login -->
+    <string name="title_activity_login">LoginActivity BG*</string>
+    <string name="prompt_user_id">User Id BG*</string>
+    <string name="prompt_password">Password BG*</string>
+    <string name="action_sign_in">Sign in BG*</string>
+    <string name="unable_to_log_in">Unable to log in! BG*</string>
+
+    <!-- String related to the Drawer Base Activity-->
+    <string name="navigation_drawer_open">Open navigation drawer BG*</string>
+    <string name="navigation_drawer_close">Close navigation drawer BG*</string>
+    <string name="drawer_home">Home BG*</string>
+    <string name="drawer_login">Log in BG*</string>
+    <string name="drawer_logout">Log out BG*</string>
+    <string name="drawer_news">News BG*</string>
+    <string name="drawer_contacts">Contacts BG*</string>
+    <string name="drawer_settings">Settings BG*</string>
+    <string name="drawer_calendar">Calendar BG*</string>
+    <string name="drawer_student_plan">Student Plan BG*</string>
+    <string name="drawer_election_campaign">Election Campaign BG*</string>
+    <string name="drawer_title">Uni mobile app BG*</string>
+    <string name="drawer_learning_header">Learning BG*</string>
+    <string name="drawer_teaching_header">Teaching BG*</string>
+    <string name="drawer_administration_header">Administration BG*</string>
+
+    <!-- String related to the Home Activity-->
+    <string name="title_activity_home">HomeActivity BG*</string>
+    <string name="home_text">Welcome/Home text BG*</string>
+
+
+    <!-- String related to the News Activities-->
+    <string name="title_activity_news">NewsActivity BG*</string>
+    <string name="title_activity_news_details">NewsDetailsActivity BG*</string>
+    <string name="news_load">Load More... BG*</string>
+    <string name="news_deleted">News successfully deleted. BG*</string>
+    <string name="news_created">News successfully created. BG*</string>
+    <string name="news_upload_label">Upload Photo: BG*</string>
+    <string name="news_choose_image">Choose... BG*</string>
+    <string name="news_create">Create News BG*</string>
+    <string name="title_activity_news_create">CreateNewsActivity BG*</string>
+
+
+    <!--Common strings-->
+    <!--Buttons-->
+    <string name="back_button">Back BG*</string>
+    <string name="cancel_button">Cancel BG*</string>
+    <string name="save_button">Save BG*</string>
+    <string name="delete_button">Delete BG*</string>
+    <!--Labels-->
+    <string name="title_label">Title: BG*</string>
+    <string name="description_label">Description: BG*</string>
+    <string name="name_label">Name: BG*</string>
+    <string name="room_label">Room: BG*</string>
+    <string name="lecturer_label">Lecturer: BG*</string>
+    <string name="course_credits_label">Credits: BG*</string>
+    <string name="course_hours_label">Hours: BG*</string>
+    <string name="date_label">Date BG*</string>
+    <!--Confirmation-->
+    <string name="confirmation_label">Confirmation BG*</string>
+    <string name="confirm_cancel">Are you sure you want to cancel? BG*</string>
+    <string name="confirm_delete">Are you sure you want to delete this item? BG*</string>
+    <string name="confirmation_yes">ok BG*</string>
+    <string name="confirmation_no">cancel BG*</string>
+    <!--Other-->
+    <string name="error_field_required">This field is required BG*</string>
+
+
+    <!-- String related to the Contacts Activities-->
+    <string name="title_contacts">ContactsActivity BG*</string>
+    <string name="title_contact_detail">ContactDetailsActivity BG*</string>
+    <string name="contacts_administration">Administration BG*</string>
+    <string name="contacts_lecturers">Lecturers BG*</string>
+    <string name="contact_hours">Hours: BG*</string>
+    <string name="contact_phone">Phone: BG*</string>
+    <string name="contact_email">Email: BG*</string>
+    <string name="contact_job">Job: BG*</string>
+
+
+    <!-- String related to the Settings Activity-->
+    <string name="title_activity_settings">SettingsActivity BG*</string>
+    <string name="pref_url_title">Server URL BG*</string>
+    <string name="pref_urt_summary">The URL of the application server BG*</string>
+    <string name="pref_send_mode_title">Send network mode BG*</string>
+    <string name="pref_send_mode_summary">Send the network mode the server BG*</string>
+    <string name="pref_lang_title">Language BG*</string>
+
+
+    <!-- String related to the Student Plan Activity-->
+    <string name="title_student_plan">StudentPlanActivity BG*</string>
+    <string name="student_plan_course">Course: BG*</string>
+    <string name="student_plan_semester">Semester: BG*</string>
+    <string-array name="student_plan_filter">
+        <item>Only for my course BG*</item>
+        <item>Only for my program BG*</item>
+        <item>All BG*</item>
+    </string-array>
+
+    <!-- String related to the Election Campaign and Course Activities-->
+    <string name="title_election_campaign">ElectionCampaignActivity BG*</string>
+    <string name="title_election_course">ElectionCourseActivity BG*</string>
+    <string name="election_campain_current">Current election campaign: BG*</string>
+    <string name="election_campaign_start_date">Start date: BG*</string>
+    <string name="election_campaign_close_date">Close date: BG*</string>
+    <string name="election_campaign_end_date">End date: BG*</string>
+    <string name="election_campaign_student_plan_filter">Student plan filter: BG*</string>
+    <string name="election_campaign_category_filter">Category filter: BG*</string>
+    <string name="election_campaign_not_active">The election campaign is not active! BG*</string>
+    <string name="election_category_all">-- All -- BG*</string>
+    <string name="election_course_category">Category: BG*</string>
+    <string name="election_course_min_grade">Min Grade: BG*</string>
+    <string name="election_course_enroll">Enroll BG*</string>
+    <string name="election_course_enrolled">The course was enrolled. BG*</string>
+    <string name="election_course_cancelled">The course was cancelled. BG*</string>
+    <string name="election_course_cancel_confirm">Are you sure you want to un-enroll this course? BG*</string>
+    <string name="election_course_course">Course BG*</string>
+
+
+    <!-- String related to the Calendar Activities-->
+    <string name="title_activity_calendar">CalendarActivity BG*</string>
+    <string name="title_activity_create_event">CreateEventActivity BG*</string>
+    <string name="calendar_today">Today BG*</string>
+    <string name="calendar_day_view">Day View BG*</string>
+    <string name="calendar_three_day_view">Three Day View BG*</string>
+    <string name="calendar_week_view">Week View BG*</string>
+    <string name="calendar_show_schedule">Show Schedule BG*</string>
+    <string name="calendar_show_events">Show Events BG*</string>
+    <string name="calendar_abbreviation">Abbreviation: BG*</string>
+    <string name="calendar_title">Title: BG*</string>
+    <string name="calendar_start_time">Start Time: BG*</string>
+    <string name="calendar_end_time">End Time: BG*</string>
+    <string name="calendar_location">Location: BG*</string>
+    <string name="calendar_event_details">Event Details: BG*</string>
+    <string name="calendar_elective">Elective: BG*</string>
+    <string name="calendar_type">Type: BG*</string>
+    <string name="calendar_lecturer">Lecturer: BG*</string>
+    <string name="calendar_program">Program: BG*</string>
+    <string name="calendar_event_saved">Event successfully saved. BG*</string>
+    <string name="calendar_event_deleted">Event successfully deleted. BG*</string>
+    <string name="calendar_select_date">Select date BG*</string>
+    <string name="calendar_select_time">Select time BG*</string>
+    <string name="calendar_room_undefined">Undefined BG*</string>
+    <string name="calendar_event_elective">Elective BG*</string>
+    <string name="calendar_event_mandatory">Mandatory BG*</string>
+    <string name="calendar_end_time_error">End date should be after start date! BG*</string>
+</resources>

@@ -21,7 +21,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Course:"/>
+            android:text="@string/student_plan_course"/>
 
         <Spinner
             android:layout_weight="1"
@@ -38,7 +38,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="Semester:" />
+            android:text="@string/student_plan_semester" />
 
         <Spinner
             android:layout_weight="1"

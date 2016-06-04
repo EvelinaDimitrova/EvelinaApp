@@ -87,6 +87,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="@string/contact_phone"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -94,13 +95,14 @@
             android:id="@+id/contact_details_phone"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ImageButton
             android:id="@+id/contact_details_dial_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:src="@drawable/ic_menu_camera" />
     </TableRow>
@@ -110,6 +112,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:text="@string/contact_email"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -117,13 +120,14 @@
             android:id="@+id/contact_details_email"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_gravity="center_vertical"
             android:layout_weight="1"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
         <ImageButton
             android:id="@+id/contact_details_email_button"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_gravity="right"
             android:src="@drawable/ic_menu_send" />
     </TableRow>
@@ -134,6 +138,7 @@
             android:id="@+id/contact_details_back_button"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_weight="1"
             android:layout_span="3"
             android:text="@string/back_button" />
     </TableRow>

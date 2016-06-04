@@ -9,6 +9,7 @@ import android.net.NetworkInfo;
 import android.preference.PreferenceManager;
 import android.text.TextUtils;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -50,7 +51,7 @@ public class ApplicationController extends Application {
 
     private static String _serverURLPref;
     private static String _localePref;
-    private static Boolean _sendNetworkModePref;
+    private static String _contentModePref;
 
     public static SimpleDateFormat fullDateTimeFormat = new SimpleDateFormat("dd MMM yyyy HH:mm");
 
@@ -66,12 +67,12 @@ public class ApplicationController extends Application {
         ApplicationController._serverURLPref = url;
     }
 
-    public static Boolean getSendNetworkModePref() {
-        return _sendNetworkModePref;
+    public static String getContentPref() {
+        return _contentModePref;
     }
 
-    public static void setSendNetworkModePref(Boolean send) {
-        ApplicationController._sendNetworkModePref = send;
+    public static void setContentModePref(String send) {
+        ApplicationController._contentModePref = send;
     }
 
     public static String getLocalePref() {
@@ -91,6 +92,10 @@ public class ApplicationController extends Application {
         getInstance().getBaseContext().getResources().updateConfiguration(config, getInstance().getBaseContext().getResources().getDisplayMetrics());
     }
 
+    public static void showErrorToast(){
+        Toast.makeText(getInstance(), R.string.error_message, Toast.LENGTH_LONG).show();
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -107,9 +112,9 @@ public class ApplicationController extends Application {
         _dataProvider = new DataProvider(getApplicationContext());
 
         SharedPreferences sharedPref = PreferenceManager.getDefaultSharedPreferences(this);
-        _serverURLPref = sharedPref.getString(SettingsActivity.KEY_PREF_SERVER_URL, getString(R.string.pref_default_url));
-        _sendNetworkModePref = sharedPref.getBoolean(SettingsActivity.KEY_PREF_SEND_NETWORK_MODE, true);
-        setLocalePref(sharedPref.getString(SettingsActivity.KEY_PREF_LOCALE, getString(R.string.pref_lang_default)));
+        _serverURLPref = sharedPref.getString(getString(R.string.PREF_SERVER_URL), getString(R.string.pref_default_url));
+        _contentModePref = sharedPref.getString(getString(R.string.PREF_CONTENT_MODE), getString(R.string.pref_content_mode_default));
+        setLocalePref(sharedPref.getString(getString(R.string.PREF_LANGUAGE), getString(R.string.pref_lang_default)));
 
     }
 
@@ -117,9 +122,6 @@ public class ApplicationController extends Application {
      * @return ApplicationController singleton instance
      */
     public static synchronized ApplicationController getInstance() {
-
-        Log.v("getInstance ", (_sInstance == null ? "true" : "false"));
-
         return _sInstance;
     }
 

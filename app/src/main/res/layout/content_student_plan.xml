@@ -1,69 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
-<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:stretchColumns="*"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="com.fmi.evelina.unimobileapp.activity.StudentPlanActivity">
 
-
-    <TableRow
+    <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/student_plan_course"/>
+        <TableRow
+            android:background="@color/dropdown"
+            android:paddingLeft="@dimen/list_item_padding_left">
 
-        <Spinner
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:id="@+id/grades_spinner"
-            />
-    </TableRow>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/student_plan_course"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
-    <TableRow
+            <Spinner
+                android:id="@+id/grades_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overlapAnchor="false"
+                android:singleLine="true" />
+        </TableRow>
+
+        <!--Separator-->
+        <TableRow>
+
+            <View android:layout_height="1dp"></View>
+        </TableRow>
+
+        <TableRow
+            android:background="@color/dropdown"
+            android:paddingLeft="@dimen/list_item_padding_left">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/student_plan_semester"
+                android:textAppearance="?android:attr/textAppearanceMedium" />
+
+            <Spinner
+                android:id="@+id/semester_spinner"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overlapAnchor="false"
+                android:singleLine="true" />
+        </TableRow>
+
+    </TableLayout>
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" >
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textAppearance="?android:attr/textAppearanceMedium"
-            android:text="@string/student_plan_semester" />
-
-        <Spinner
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:id="@+id/semester_spinner"/>
-    </TableRow>
-    <TableRow
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" >
-        <RelativeLayout
+        <ListView
+            android:id="@+id/courses_listView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingBottom="@dimen/activity_vertical_margin"
-            android:paddingLeft="@dimen/activity_horizontal_margin"
-            android:paddingRight="@dimen/activity_horizontal_margin"
-            android:paddingTop="@dimen/activity_vertical_margin"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior">
-            <ListView
-                android:id="@+id/courses_listView"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentTop="true">
-            </ListView>
-        </RelativeLayout>
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentTop="true"
+            android:cacheColorHint="@android:color/transparent"
+            android:listSelector="@android:color/transparent"></ListView>
+    </RelativeLayout>
 
-    </TableRow>
-</TableLayout>
+</LinearLayout>

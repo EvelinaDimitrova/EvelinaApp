@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.RectF;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.util.Log;
 import android.util.TypedValue;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -25,7 +24,7 @@ import com.fmi.evelina.unimobileapp.model.calendar_events_model.CalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringCalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringLecturerCalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.RecurringStudentCalendarEvent;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -467,7 +466,7 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
     }
 
     //A callback for the retrieval of the available One-time events
-    private class GetEventsCallback implements CallBack<List<CalendarEvent>> {
+    private class GetEventsCallback implements ICallBack<List<CalendarEvent>> {
 
         @Override
         public void onSuccess(List<CalendarEvent> events) {
@@ -498,12 +497,12 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
 
         @Override
         public void onFail(String msg) {
-            Toast.makeText(CalendarActivity.this, msg, Toast.LENGTH_SHORT).show();
+            ApplicationController.showErrorToast();
         }
     }
 
     //A callback for the retrieval of the available recurring events for a student
-    private class GetStudentSchedulerCallback implements CallBack<List<RecurringStudentCalendarEvent>> {
+    private class GetStudentSchedulerCallback implements ICallBack<List<RecurringStudentCalendarEvent>> {
 
         @Override
         public void onSuccess(List<RecurringStudentCalendarEvent> events) {
@@ -525,12 +524,12 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
 
         @Override
         public void onFail(String msg) {
-            Toast.makeText(CalendarActivity.this, msg, Toast.LENGTH_SHORT).show();
+            ApplicationController.showErrorToast();
         }
     }
 
     //A callback for the retrieval of the available recurring events for a lecturer
-    private class GetLecturerSchedulerCallback implements CallBack<List<RecurringLecturerCalendarEvent>> {
+    private class GetLecturerSchedulerCallback implements ICallBack<List<RecurringLecturerCalendarEvent>> {
         @Override
         public void onSuccess(List<RecurringLecturerCalendarEvent> events) {
 
@@ -551,7 +550,7 @@ public class CalendarActivity extends DrawerBaseActivity implements WeekView.Eve
 
         @Override
         public void onFail(String msg) {
-            Toast.makeText(CalendarActivity.this, msg, Toast.LENGTH_SHORT).show();
+            ApplicationController.showErrorToast();
         }
     }
 

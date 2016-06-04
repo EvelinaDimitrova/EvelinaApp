@@ -3,7 +3,6 @@ package com.fmi.evelina.unimobileapp.fragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +16,7 @@ import com.fmi.evelina.unimobileapp.activity.Contacts.ContactDetailsActivity;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.LecturersContactsListAdapter;
 import com.fmi.evelina.unimobileapp.model.contacts_model.LecturerContact;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +56,7 @@ public class LecturersContactsFragment extends Fragment {
             }
         }
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_item, categories);
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(this.getActivity(), android.R.layout.simple_spinner_dropdown_item, categories);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         categorySpinner.setAdapter(adapter);
 
@@ -99,7 +98,7 @@ public class LecturersContactsFragment extends Fragment {
             }
         });
 
-        ApplicationController.getDataProvider().getLecturersContacts(new CallBack<List<LecturerContact>>() {
+        ApplicationController.getDataProvider().getLecturersContacts(new ICallBack<List<LecturerContact>>() {
             @Override
             public void onSuccess(List<LecturerContact> data) {
                 contactsList.clear();
@@ -111,7 +110,7 @@ public class LecturersContactsFragment extends Fragment {
 
             @Override
             public void onFail(String msg) {
-
+                ApplicationController.showErrorToast();
             }
         });
 

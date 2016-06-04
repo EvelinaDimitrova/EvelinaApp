@@ -15,10 +15,6 @@ import com.fmi.evelina.unimobileapp.fragment.SettingFragment;
 
 public class SettingsActivity extends AppCompatActivity {
 
-    public static final String KEY_PREF_SERVER_URL = "pref_server_url";
-    public static final String KEY_PREF_SEND_NETWORK_MODE = "pref_send_network_mode";
-    public static final String KEY_PREF_LOCALE = "pref_language";
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

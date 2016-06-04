@@ -10,19 +10,17 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
-import com.fmi.evelina.unimobileapp.controller.DataProvider;
 import com.fmi.evelina.unimobileapp.model.News;
 import com.fmi.evelina.unimobileapp.model.UserRole;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
-public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<News> {
+public class NewsDetailsActivity extends DrawerBaseActivity implements ICallBack<News> {
 
     public static final String NEWS_ID_KEY = "newsId";
     public static final int NEWS_DELETED = 1;
@@ -70,7 +68,7 @@ public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<
                                     }, new Response.ErrorListener() {
                                         @Override
                                         public void onErrorResponse(VolleyError error) {
-
+                                            ApplicationController.showErrorToast();
                                         }
                                     });
                                 }
@@ -115,8 +113,8 @@ public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<
 
         if (news.ImageName != null) {
             //Store the image name in a variable available for the delete function
-            newsImageName = news.ImageName ;
-            ApplicationController.getDataProvider().getNewsImage(news, new CallBack<News>() {
+            newsImageName = news.ImageName;
+            ApplicationController.getDataProvider().getNewsImage(news, new ICallBack<News>() {
                 @Override
                 public void onSuccess(News data) {
                     if (data.Image != null) {
@@ -127,7 +125,8 @@ public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<
 
                 @Override
                 public void onFail(String msg) {
-
+                    //Don't show an error, just leave the iamge blank
+                    //ApplicationController.showErrorToast();
                 }
             });
         }
@@ -135,7 +134,7 @@ public class NewsDetailsActivity extends DrawerBaseActivity implements CallBack<
 
     @Override
     public void onFail(String msg) {
-
+        ApplicationController.showErrorToast();
     }
 
     //Reset the title

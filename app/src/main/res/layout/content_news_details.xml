@@ -37,7 +37,8 @@
             android:scaleType="fitCenter"
             android:adjustViewBounds="true"
             android:visibility="gone"
-            android:layout_margin="30dp"/>
+            android:layout_margin="30dp"
+            android:maxHeight="250dp"/>
 
         <TextView
             android:id="@+id/news_details_text"

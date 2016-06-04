@@ -15,115 +15,138 @@
 
     <TableLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="*">
+        android:layout_height="wrap_content">
 
         <TableRow>
 
             <TextView
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="0.01"
                 android:text="@string/name_label" />
 
             <TextView
                 android:id="@+id/election_course_name"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/election_course_category" />
 
             <TextView
                 android:id="@+id/election_course_category"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/course_credits_label" />
 
             <TextView
                 android:id="@+id/election_course_credits"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/lecturer_label" />
 
             <TextView
                 android:id="@+id/election_course_lecturer"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/course_hours_label" />
 
             <TextView
                 android:id="@+id/election_course_hours"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </TableRow>
 
         <TableRow>
 
             <TextView
-                android:layout_weight="1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:text="@string/election_course_min_grade" />
 
             <TextView
                 android:id="@+id/election_course_min_grade"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_weight="1" />
         </TableRow>
-
-        <TableRow>
-
-            <TextView android:text="@string/description_label" />
-        </TableRow>
-
-        <TableRow android:layout_weight="1">
-
-            <ScrollView
-                android:layout_span="3"
-                android:layout_weight="1">
-
-                <TextView
-                    android:id="@+id/election_course_description"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent" />
-            </ScrollView>
-
-
-        </TableRow>
-
-        <TableRow>
-
-            <Button
-                android:id="@+id/election_course_btn_back"
-                android:layout_weight="1"
-                android:text="@string/back_button" />
-
-            <Button
-                android:id="@+id/election_course_btn_enroll"
-                android:layout_weight="1"
-                android:text="@string/election_course_enroll" />
-
-            <Button
-                android:id="@+id/election_course_btn_cancel"
-                android:layout_weight="1"
-                android:text="@string/cancel_button"
-                android:visibility="gone" />
-
-        </TableRow>
-
     </TableLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/description_label" />
+
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_weight="1">
+
+        <TextView
+            android:id="@+id/election_course_description"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </ScrollView>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <Button
+            android:id="@+id/election_course_btn_back"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/back_button" />
+
+        <Button
+            android:id="@+id/election_course_btn_enroll"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/election_course_enroll" />
+
+        <Button
+            android:id="@+id/election_course_btn_cancel"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="@string/election_course_unenroll"
+            android:visibility="gone" />
+    </LinearLayout>
+
 
 </LinearLayout>

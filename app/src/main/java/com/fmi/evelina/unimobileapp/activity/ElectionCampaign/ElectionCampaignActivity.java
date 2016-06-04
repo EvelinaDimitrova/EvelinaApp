@@ -16,12 +16,12 @@ import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.ElectionCoursesListAdapter;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCampaign;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCourse;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class ElectionCampaignActivity extends DrawerBaseActivity implements CallBack<ElectionCampaign> {
+public class ElectionCampaignActivity extends DrawerBaseActivity implements ICallBack<ElectionCampaign> {
 
     private static final int VIEW_COURSE_REQUEST = 1;
     private ElectionCampaign currentElectionCampaign;
@@ -71,8 +71,6 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         coursesListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Log.v("EVE_TRACE", "onItemClick");
-
                 showElectionCourseView(displayElectionCourseList.get(position));
             }
         });
@@ -92,7 +90,7 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
     private void populateStudentPlanFilter() {
         Spinner spinner = (Spinner) findViewById(R.id.student_plan_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
-                R.array.student_plan_filter, android.R.layout.simple_spinner_item);
+                R.array.student_plan_filter, android.R.layout.simple_spinner_dropdown_item);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(adapter);
     }
@@ -111,7 +109,7 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         availableCategories.add(0, getString(R.string.election_category_all));
 
         Spinner spinner = (Spinner) findViewById(R.id.course_category_spinner);
-        courseCategoryAdapter = new ArrayAdapter<>(ElectionCampaignActivity.this, android.R.layout.simple_spinner_item, availableCategories);
+        courseCategoryAdapter = new ArrayAdapter<>(ElectionCampaignActivity.this, android.R.layout.simple_spinner_dropdown_item, availableCategories);
         courseCategoryAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         spinner.setAdapter(courseCategoryAdapter);
     }
@@ -133,14 +131,13 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
         endTime.setText(ApplicationController.fullDateTimeFormat.format(currentElectionCampaign.EndDate));
 
         View info = findViewById(R.id.election_campaign_not_active);
-        if(!currentElectionCampaign.IsOpen() && !currentElectionCampaign.IsClosed()){
+        if (!currentElectionCampaign.IsOpen() && !currentElectionCampaign.IsClosed()) {
             info.setVisibility(View.VISIBLE);
-        }
-        else {
+        } else {
             info.setVisibility(View.GONE);
         }
 
-        ApplicationController.getDataProvider().getElectionCampaignCourses(new CallBack<List<ElectionCourse>>() {
+        ApplicationController.getDataProvider().getElectionCampaignCourses(new ICallBack<List<ElectionCourse>>() {
             @Override
             public void onSuccess(List<ElectionCourse> data) {
                 allElectionCourseList.addAll(data);
@@ -153,14 +150,14 @@ public class ElectionCampaignActivity extends DrawerBaseActivity implements Call
 
             @Override
             public void onFail(String msg) {
-                Log.v("EVE_TRACE_ERROR", msg);
+                ApplicationController.showErrorToast();
             }
         });
     }
 
     @Override
     public void onFail(String msg) {
-        Log.v("EVE_TRACE_ERROR", msg);
+        ApplicationController.showErrorToast();
     }
 
     @Override

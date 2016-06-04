@@ -35,18 +35,16 @@ dependencies {
     testCompile 'junit:junit:4.12'
 
     // 3rd party library projects
+    compile 'com.github.alamkanak:android-week-view:1.2.6'
+    compile 'com.mcxiaoke.volley:library:1.0.19'
+    compile 'joda-time:joda-time:2.9.3'
 
     // google support libraries
-
-    //
     compile('org.apache.httpcomponents:httpmime:4.3.6') {
         exclude module: 'httpclient'
     }
     compile 'com.android.support:appcompat-v7:23.2.0'
     compile 'com.android.support:design:23.2.0'
-    compile 'com.mcxiaoke.volley:library:1.0.19'
-    compile 'com.github.alamkanak:android-week-view:1.2.6'
-    compile 'joda-time:joda-time:2.9.3'
     compile 'com.google.android.gms:play-services-analytics:8.+'
     compile 'com.google.code.gson:gson:2.6.2'
     compile 'org.apache.httpcomponents:httpclient-android:4.3.5.1'

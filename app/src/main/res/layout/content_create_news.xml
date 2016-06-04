@@ -54,6 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:paddingLeft="5dp"
             android:gravity="center_vertical"
             android:text="@string/news_upload_label" />
 
@@ -62,12 +63,12 @@
             android:layout_height="match_parent"
             android:layout_weight="1">
 
-            <Button
+            <ImageButton
                 android:id="@+id/create_news_add_image"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/news_choose_image" />
+                android:src="@drawable/ic_menu_gallery"/>
 
             <ImageView
                 android:id="@+id/create_news_image"

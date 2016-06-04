@@ -1,6 +1,25 @@
 <resources>
+
+    <!-- Preference options-->
+    <array name="pref_content_mode_array_val">
+        <item>DETECT</item>
+        <item>FULL</item>
+        <item>COMPACT</item>
+    </array>
+    <array name="pref_lang_array_val" >
+        <item>bg</item>
+        <item>en</item>
+    </array>
+    <!-- Default preferences-->
+    <string name="pref_default_url" translatable="false">http://b1b5043e.ngrok.io</string>
+    <string name="pref_lang_default" translatable="false">bg</string>
+    <string name="pref_content_mode_default" translatable="false">FULL</string>
+    <!-- Preferences keys-->
+    <string name="PREF_SERVER_URL" translatable="false">com.fmi.evelina.unimobileapp.PREF_SERVER_URL</string>
+    <string name="PREF_CONTENT_MODE" translatable="false">com.fmi.evelina.unimobileapp.PREF_CONTENT_MODE</string>
+    <string name="PREF_LANGUAGE" translatable="false">com.fmi.evelina.unimobileapp.PREF_LANGUAGE</string>
+
     <string name="app_name">UniMobileApp*</string>
-    <!--<string name="server_url">http://b1b5043e.ngrok.io</string>-->
 
     <!-- Strings related to login -->
     <string name="title_activity_login">LoginActivity*</string>
@@ -38,7 +57,6 @@
     <string name="news_deleted">News successfully deleted.*</string>
     <string name="news_created">News successfully created.*</string>
     <string name="news_upload_label">Upload Photo:*</string>
-    <string name="news_choose_image">Choose...*</string>
     <string name="news_create">Create News*</string>
     <string name="title_activity_news_create">CreateNewsActivity*</string>
 
@@ -66,6 +84,7 @@
     <string name="confirmation_no">cancel*</string>
     <!--Other-->
     <string name="error_field_required">This field is required*</string>
+    <string name="error_message">An error has occurred!*</string>
 
 
     <!-- String related to the Contacts Activities-->
@@ -83,7 +102,7 @@
     <string name="title_activity_settings">SettingsActivity*</string>
     <string name="pref_url_title">Server URL*</string>
     <string name="pref_urt_summary">The URL of the application server*</string>
-    <string name="pref_default_url">http://77717dc9.ngrok.io</string>
+    <!-- Change the default URL of the server before deployment -->
     <string name="pref_send_mode_title">Send network mode*</string>
     <string name="pref_send_mode_summary">Send the network mode the server*</string>
     <string name="pref_lang_title">Language*</string>
@@ -91,11 +110,12 @@
         <item>Bulgarian*</item>
         <item>English*</item>
     </array>
-    <array name="pref_lang_array_val">
-        <item>bg</item>
-        <item>en</item>
+    <string name="pref_content_mode_title">Content Mode*</string>
+    <array name="pref_content_mode_key">
+        <item>Detect*</item>
+        <item>Full*</item>
+        <item>Compact*</item>
     </array>
-    <string name="pref_lang_default">bg</string>
 
 
     <!-- String related to the Student Plan Activity-->
@@ -122,6 +142,7 @@
     <string name="election_course_category">Category:*</string>
     <string name="election_course_min_grade">Min Grade:*</string>
     <string name="election_course_enroll">Enroll*</string>
+    <string name="election_course_unenroll">Un-enroll*</string>
     <string name="election_course_enrolled">The course was enrolled.*</string>
     <string name="election_course_cancelled">The course was cancelled.*</string>
     <string name="election_course_cancel_confirm">Are you sure you want to un-enroll this course?*</string>

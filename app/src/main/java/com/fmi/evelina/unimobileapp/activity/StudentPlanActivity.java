@@ -16,12 +16,12 @@ import com.fmi.evelina.unimobileapp.model.student_plan_model.Course;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.Grade;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.Semester;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.StudentPlan;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<StudentPlan> {
+public class StudentPlanActivity extends DrawerBaseActivity implements ICallBack<StudentPlan> {
 
     private GradesSpinnerAdapter gradesSpinnerAdapter;
     private SemestersSpinnerAdapter semestersSpinnerAdapter;
@@ -42,9 +42,9 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
         setDrawerContentView(R.layout.content_student_plan);
 
         gradesSpinnerAdapter = new GradesSpinnerAdapter(StudentPlanActivity.this,
-                android.R.layout.simple_spinner_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 grades);
-        gradesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        gradesSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         gradesSpinner = (Spinner) findViewById(R.id.grades_spinner);
         gradesSpinner.setAdapter(gradesSpinnerAdapter);
@@ -69,9 +69,9 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
         });
 
         semestersSpinnerAdapter = new SemestersSpinnerAdapter(StudentPlanActivity.this,
-                android.R.layout.simple_spinner_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 semesters);
-        semestersSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        semestersSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         semesterSpinner = (Spinner) findViewById(R.id.semester_spinner);
         semesterSpinner.setAdapter(semestersSpinnerAdapter);
@@ -90,7 +90,6 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
 
             }
         });
-
 
         coursesListAdapter = new CoursesListAdapter(StudentPlanActivity.this, courses);
         ListView coursesListView = (ListView) findViewById(R.id.courses_listView);
@@ -111,7 +110,7 @@ public class StudentPlanActivity extends DrawerBaseActivity implements CallBack<
 
     @Override
     public void onFail(String msg) {
-        Log.v("EVE_TRACE_ERROR", msg);
+        ApplicationController.showErrorToast();
     }
 
     //Reset the title

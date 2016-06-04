@@ -15,7 +15,7 @@ import com.fmi.evelina.unimobileapp.model.contacts_model.AdministrationContactDa
 import com.fmi.evelina.unimobileapp.model.contacts_model.ContactData;
 import com.fmi.evelina.unimobileapp.model.contacts_model.LecturerContact;
 import com.fmi.evelina.unimobileapp.model.student_plan_model.StudentPlan;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 import com.google.gson.Gson;
 
 import java.sql.Time;
@@ -51,7 +51,6 @@ public class DataBaseAPI {
 
         //Insert the events
         for (CalendarEvent event : data) {
-            Log.v("EVE_TRACE", "Inserting event.");
             // Create a new map of values, where column names are the keys
             ContentValues values = new ContentValues();
             values.put(DataBaseContract.Events.COLUMN_NAME_ABBR, event.Abbreviation);
@@ -73,7 +72,7 @@ public class DataBaseAPI {
         }
     }
 
-    public static void getEvents(final CallBack<List<CalendarEvent>> onCallBack) {
+    public static void getEvents(final ICallBack<List<CalendarEvent>> onCallBack) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
@@ -157,7 +156,7 @@ public class DataBaseAPI {
         }
     }
 
-    public static void getLecturerSchedule(final CallBack<List<RecurringLecturerCalendarEvent>> onCallBack) {
+    public static void getLecturerSchedule(final ICallBack<List<RecurringLecturerCalendarEvent>> onCallBack) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
@@ -252,7 +251,7 @@ public class DataBaseAPI {
         }
     }
 
-    public static void getStudentSchedule(final CallBack<List<RecurringStudentCalendarEvent>> onCallBack) {
+    public static void getStudentSchedule(final ICallBack<List<RecurringStudentCalendarEvent>> onCallBack) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {
@@ -342,7 +341,7 @@ public class DataBaseAPI {
         }
     }
 
-    public static void getAdministrationContacts(final CallBack<List<AdministrationCategoryContacts>> onCallBack) {
+    public static void getAdministrationContacts(final ICallBack<List<AdministrationCategoryContacts>> onCallBack) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
 
@@ -437,7 +436,7 @@ public class DataBaseAPI {
         }
     }
 
-    public static void getLecturersContacts(final CallBack<List<LecturerContact>> onCallBack) {
+    public static void getLecturersContacts(final ICallBack<List<LecturerContact>> onCallBack) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
 
@@ -508,7 +507,7 @@ public class DataBaseAPI {
 
     }
 
-    public static void getStudentPlan(final CallBack<StudentPlan> onCallBack) {
+    public static void getStudentPlan(final ICallBack<StudentPlan> onCallBack) {
         // Define a projection that specifies which columns from the database
         // you will actually use after this query.
         String[] projection = {

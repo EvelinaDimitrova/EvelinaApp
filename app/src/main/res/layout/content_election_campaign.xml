@@ -13,17 +13,16 @@
     tools:context=".activity.ElectionCampaign.ElectionCampaignActivity">
 
     <TextView
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="@string/election_campain_current" />
 
     <TableLayout
         android:id="@+id/election_campaign_data"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:stretchColumns="*"
-        android:visibility="gone">
-
+        android:layout_height="wrap_content"
+        >
+        <!--android:visibility="gone"-->
         <TableRow android:layout_width="match_parent">
 
             <TextView
@@ -64,55 +63,68 @@
         </TableRow>
 
         <TableRow>
+
             <TextView
                 android:id="@+id/election_campaign_not_active"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_weight="2"
                 android:layout_span="2"
+                android:layout_weight="2"
                 android:text="@string/election_campaign_not_active"
-                android:visibility="gone"
-                android:textColor="@color/colorAccent"/>
+                android:textColor="@color/colorAccent"
+                android:visibility="gone" />
         </TableRow>
 
-        <TableRow>
+        <TableRow
+            android:layout_width="match_parent"
+            android:background="@color/dropdown">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="@string/election_campaign_student_plan_filter" />
 
             <Spinner
                 android:id="@+id/student_plan_spinner"
-                android:layout_height="match_parent"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:overlapAnchor="false"
+                android:singleLine="true"
                 android:layout_weight="1" />
         </TableRow>
 
+        <!--Separator-->
         <TableRow>
+
+            <View android:layout_height="1dp"></View>
+        </TableRow>
+
+        <TableRow
+            android:layout_width="match_parent"
+            android:background="@color/dropdown">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="@string/election_campaign_category_filter" />
 
             <Spinner
                 android:id="@+id/course_category_spinner"
-                android:layout_height="match_parent"
-                android:layout_weight="1" />
-        </TableRow>
-
-        <TableRow>
-
-
-            <ListView
-                android:id="@+id/election_courses_listView"
-                android:layout_width="match_parent"
+                android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_span="2"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"></ListView>
+                android:overlapAnchor="false"
+                android:singleLine="true"
+                android:layout_weight="1" />
         </TableRow>
     </TableLayout>
 
-
+    <ListView
+        android:id="@+id/election_courses_listView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_span="2"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"></ListView>
 </LinearLayout>
 

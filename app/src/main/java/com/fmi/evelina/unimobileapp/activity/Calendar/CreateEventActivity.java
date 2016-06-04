@@ -27,9 +27,7 @@ import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.RoomsSpinnerAdapter;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.CalendarEvent;
 import com.fmi.evelina.unimobileapp.model.calendar_events_model.Room;
-import com.fmi.evelina.unimobileapp.network.CallBack;
-
-import org.joda.time.LocalDate;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 import java.sql.Time;
 import java.text.SimpleDateFormat;
@@ -85,9 +83,9 @@ public class CreateEventActivity extends DrawerBaseActivity {
 
         //Setup the rooms spinner with the appropriate data collection and adapter
         roomsSpinnerAdapter = new RoomsSpinnerAdapter(CreateEventActivity.this,
-                android.R.layout.simple_dropdown_item_1line,
+                android.R.layout.simple_spinner_dropdown_item,
                 rooms);
-        roomsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_item);
+        roomsSpinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
 
         Spinner roomsSpinner = (Spinner) findViewById(R.id.create_event_location);
         roomsSpinner.setAdapter(roomsSpinnerAdapter);
@@ -170,8 +168,7 @@ public class CreateEventActivity extends DrawerBaseActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(CreateEventActivity.this, "Error: Unable to save the event!", Toast.LENGTH_LONG).show();
-                                Log.e("EVE_TRACE_ERROR", error.toString());
+                                ApplicationController.showErrorToast();
                             }
                         });
             }
@@ -198,7 +195,7 @@ public class CreateEventActivity extends DrawerBaseActivity {
 
 
         //Call DataAPI to get all available rooms
-        ApplicationController.getDataProvider().getRooms(new CallBack<List<Room>>() {
+        ApplicationController.getDataProvider().getRooms(new ICallBack<List<Room>>() {
             @Override
             public void onSuccess(List<Room> data) {
                 //Clear the rooms collection
@@ -217,8 +214,7 @@ public class CreateEventActivity extends DrawerBaseActivity {
 
             @Override
             public void onFail(String msg) {
-                Toast.makeText(CreateEventActivity.this, "Error: Unable to get available rooms!", Toast.LENGTH_LONG).show();
-                Log.e("EVE_TRACE_ERROR", msg);
+                ApplicationController.showErrorToast();
             }
         });
     }

@@ -18,9 +18,9 @@ import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCampaign;
 import com.fmi.evelina.unimobileapp.model.election_camaign_model.ElectionCourse;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
-public class ElectionCourseActivity extends DrawerBaseActivity implements CallBack<ElectionCourse> {
+public class ElectionCourseActivity extends DrawerBaseActivity implements ICallBack<ElectionCourse> {
 
     public static final String COURSE_KEY = "course";
     public static final String CAMPAIGN_KEY = "campaign";
@@ -90,7 +90,7 @@ public class ElectionCourseActivity extends DrawerBaseActivity implements CallBa
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-                                Toast.makeText(ElectionCourseActivity.this, "Unable to perform operation", Toast.LENGTH_LONG).show();
+                                ApplicationController.showErrorToast();
                             }
                         });
             }
@@ -123,7 +123,7 @@ public class ElectionCourseActivity extends DrawerBaseActivity implements CallBa
                                         new Response.ErrorListener() {
                                             @Override
                                             public void onErrorResponse(VolleyError error) {
-                                                Toast.makeText(ElectionCourseActivity.this, "Unable to perform operation", Toast.LENGTH_LONG).show();
+                                                ApplicationController.showErrorToast();
                                             }
                                         });
                             }

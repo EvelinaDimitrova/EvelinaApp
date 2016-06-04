@@ -11,23 +11,19 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.alamkanak.weekview.WeekViewEvent;
 import com.fmi.evelina.unimobileapp.R;
-import com.fmi.evelina.unimobileapp.activity.Calendar.CreateEventActivity;
 import com.fmi.evelina.unimobileapp.activity.DrawerBaseActivity;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.NewsListAdapter;
 import com.fmi.evelina.unimobileapp.model.News;
 import com.fmi.evelina.unimobileapp.model.UserRole;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
-public class NewsActivity extends DrawerBaseActivity implements CallBack<List<News>> {
+public class NewsActivity extends DrawerBaseActivity implements ICallBack<List<News>> {
 
 
     private NewsListAdapter adapter;
@@ -101,7 +97,7 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
             btnLoadExtra.setVisibility(View.GONE);
         }
 
-        ApplicationController.getDataProvider().getNewsImages(newsList, new CallBack<News>() {
+        ApplicationController.getDataProvider().getNewsImages(newsList, new ICallBack<News>() {
             @Override
             public void onSuccess(News data) {
 
@@ -118,8 +114,8 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
 
             @Override
             public void onFail(String msg) {
-                Log.e("EVE_TRACE_ERROR", msg);
-
+                //Don't show the error just leave the image blank
+                //ApplicationController.showErrorToast();
             }
         });
 
@@ -127,7 +123,7 @@ public class NewsActivity extends DrawerBaseActivity implements CallBack<List<Ne
 
     @Override
     public void onFail(String msg) {
-        Log.e("EVE_TRACE_ERROR", msg);
+        ApplicationController.showErrorToast();
     }
 
     private void showNewsDetailsView(int newsId) {

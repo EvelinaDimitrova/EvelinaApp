@@ -28,7 +28,6 @@ public class DateDeserializer implements JsonDeserializer<Date>, JsonSerializer<
     public Date deserialize(JsonElement jsonElement, Type typeOF,
                             JsonDeserializationContext context) throws JsonParseException {
         try {
-            Log.v("Eve_trace", "before = " + jsonElement.getAsString());
             return new SimpleDateFormat(DATE_FORMAT_LONG).parse(jsonElement.getAsString());
         } catch (ParseException e) {
         }

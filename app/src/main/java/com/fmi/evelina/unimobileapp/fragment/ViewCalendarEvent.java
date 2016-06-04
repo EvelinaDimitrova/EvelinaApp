@@ -194,7 +194,7 @@ public class ViewCalendarEvent extends DialogFragment {
                                             new Response.ErrorListener() {
                                                 @Override
                                                 public void onErrorResponse(VolleyError error) {
-                                                    //TODO show error
+                                                    ApplicationController.showErrorToast();
                                                 }
                                             });
                                 }
@@ -213,7 +213,8 @@ public class ViewCalendarEvent extends DialogFragment {
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         Dialog dialog =  super.onCreateDialog(savedInstanceState);
         dialog.setTitle(R.string.calendar_event_details);
-
         return dialog;
     }
+
+
 }

@@ -3,7 +3,6 @@ package com.fmi.evelina.unimobileapp.network;
 import android.graphics.Bitmap;
 import android.net.ConnectivityManager;
 import android.util.Base64;
-import android.util.Log;
 
 import com.android.volley.AuthFailureError;
 import com.android.volley.Request;
@@ -47,11 +46,12 @@ public class NetworkAPI {
     }
 
     private static final Gson gson = ApplicationController.getGson();
-    private static final String NETWORK_MODE_HEADER_KEY = "NetworkMode";
-    private static final String NETWORK_MODE_COMPACT_KEY = "Compact";
-    private static final String NETWORK_MODE_FULL_KEY = "Full";
+    private static final String LOCALE_HEADER_KEY = "Locale";
+    private static final String CONTENT_MODE_HEADER_KEY = "ContentMode";
+    private static final String CONTENT_MODE_COMPACT_KEY = "Compact";
+    private static final String CONTENT_MODE_FULL_KEY = "Full";
 
-    public static void signIn(final String userId, final String password, final CallBack<User> onCallBack) {
+    public static void signIn(final String userId, final String password, final ICallBack<User> onCallBack) {
 
         String URL = getURLRoot() + "/user";
 
@@ -66,13 +66,14 @@ public class NetworkAPI {
 
                     onCallBack.onSuccess(user);
                 } catch (Exception ex) {
-                    Log.e("FMI_APP_EXCEPTION", ex.getMessage());
+                    //Log.e("FMI_APP_EXCEPTION", ex.toString());
+                    onCallBack.onFail("Exception in signIn!");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                onCallBack.onFail("Unable to log in.");
+                onCallBack.onFail("Exception in signIn!");
             }
         }) {
             @Override
@@ -82,7 +83,7 @@ public class NetworkAPI {
                 if (authHeader != null && !authHeader.isEmpty()) {
                     result.putAll(authHeader);
                 }
-                addNetworkModeHeader(result);
+                addControlHeaders(result);
                 return result;
             }
         };
@@ -92,7 +93,7 @@ public class NetworkAPI {
         ApplicationController.getInstance().addToRequestQueue(req);
     }
 
-    public static void getStudentSchedule(final CallBack<List<RecurringStudentCalendarEvent>> onCallBack) {
+    public static void getStudentSchedule(final ICallBack<List<RecurringStudentCalendarEvent>> onCallBack) {
         User loggedUser = ApplicationController.getLoggedUser();
         if (loggedUser != null && loggedUser.Role.equals(UserRole.STUD)) {
             String URL = getURLRoot() + "/schedule?role=" + loggedUser.Role;
@@ -102,7 +103,7 @@ public class NetworkAPI {
         }
     }
 
-    public static void getLecturerSchedule(final CallBack<List<RecurringLecturerCalendarEvent>> onCallBack) {
+    public static void getLecturerSchedule(final ICallBack<List<RecurringLecturerCalendarEvent>> onCallBack) {
         User loggedUser = ApplicationController.getLoggedUser();
         if (loggedUser != null && loggedUser.Role.equals(UserRole.LECT)) {
             String URL = getURLRoot() + "/schedule?role=" + loggedUser.Role;
@@ -112,21 +113,21 @@ public class NetworkAPI {
         }
     }
 
-    public static void getEvents(final CallBack<List<CalendarEvent>> onCallBack) {
+    public static void getEvents(final ICallBack<List<CalendarEvent>> onCallBack) {
         String URL = getURLRoot() + "/schedule/events";
         makeJsonArrayRequest(CalendarEvent.class, URL, false, onCallBack);
     }
 
-    public static void getNews(final Integer newsId, final int chunkSize, final CallBack<List<News>> onCallBack) {
+    public static void getNews(final Integer newsId, final int chunkSize, final ICallBack<List<News>> onCallBack) {
         String URL = getURLRoot() + "/news?newsId=" + newsId + "&chunkSize=" + chunkSize;
         makeJsonArrayRequest(News.class, URL, false, onCallBack);
     }
 
-    public static void getNewsImage(final News news, final CallBack<News> onCallBack) {
+    public static void getNewsImage(final News news, final ICallBack<News> onCallBack) {
 
         String imageURL = getURLRoot() + "/images/" + news.ImageName;
 
-        getImage(imageURL, new CallBack<Bitmap>() {
+        getImage(imageURL, new ICallBack<Bitmap>() {
             @Override
             public void onSuccess(Bitmap image) {
                 news.Image = image;
@@ -137,11 +138,12 @@ public class NetworkAPI {
             public void onFail(String msg) {
                 //Unable to retrieve news image
                 news.Image = null;
+                onCallBack.onFail("Exception in getNewsImage!");
             }
         });
     }
 
-    public static void getNewsImages(final List<News> newsList, final CallBack<News> onCallBack) {
+    public static void getNewsImages(final List<News> newsList, final ICallBack<News> onCallBack) {
         for (final News news : newsList) {
             if (news.ImageName != null) {
                 getNewsImage(news, onCallBack);
@@ -149,7 +151,7 @@ public class NetworkAPI {
         }
     }
 
-    public static void getNewsDetails(final int newsId, final CallBack<News> onCallBack) {
+    public static void getNewsDetails(final int newsId, final ICallBack<News> onCallBack) {
         String URL = getURLRoot() + "/news/" + newsId;
         makeJsonObjectRequest(News.class, URL, false, onCallBack);
     }
@@ -163,7 +165,7 @@ public class NetworkAPI {
         String requestBody = gson.toJson(temp, News.class);
 
         //Save the title and the text first
-        makeJsonObjectRequest(News.class, urlAddNews, Request.Method.POST, requestBody, true, new CallBack<News>() {
+        makeJsonObjectRequest(News.class, urlAddNews, Request.Method.POST, requestBody, true, new ICallBack<News>() {
             @Override
             public void onSuccess(News data) {
                 newsToSave.Id = data.Id;
@@ -191,8 +193,8 @@ public class NetworkAPI {
 
                             //Add authentication header
                             addAuthenticationHeader(headers);
-                            //Add network headers
-                            addNetworkModeHeader(headers);
+                            //Add control headers
+                            addControlHeaders(headers);
 
                             return headers;
                         }
@@ -208,7 +210,8 @@ public class NetworkAPI {
 
             @Override
             public void onFail(String msg) {
-                Log.e("FMI_APP_EXCEPTION", msg);
+                //Log.e("FMI_APP_EXCEPTION", msg);
+                onError.onErrorResponse(new VolleyError("msg"));
             }
         });
     }
@@ -221,8 +224,8 @@ public class NetworkAPI {
 
         //Add authentication header
         addAuthenticationHeader(headers);
-        //Add network headers
-        addNetworkModeHeader(headers);
+        //Add control headers
+        addControlHeaders(headers);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.DELETE,
                 URL,
@@ -246,17 +249,17 @@ public class NetworkAPI {
         ApplicationController.getInstance().addToRequestQueue(req);
     }
 
-    public static void getStudentPlan(final CallBack<StudentPlan> onCallBack) {
+    public static void getStudentPlan(final ICallBack<StudentPlan> onCallBack) {
         String URL = getURLRoot() + "/studentPlan";
         makeJsonObjectRequest(StudentPlan.class, URL, true, onCallBack);
     }
 
-    public static void getCurrentElectionCampaign(final CallBack<ElectionCampaign> onCallBack) {
+    public static void getCurrentElectionCampaign(final ICallBack<ElectionCampaign> onCallBack) {
         String URL = getURLRoot() + "/electivesCampaign";
         makeJsonObjectRequest(ElectionCampaign.class, URL, false, onCallBack);
     }
 
-    public static void getElectionCampaignCourses(final CallBack<List<ElectionCourse>> onCallBack) {
+    public static void getElectionCampaignCourses(final ICallBack<List<ElectionCourse>> onCallBack) {
         User loggedUser = ApplicationController.getLoggedUser();
 
         if (loggedUser != null) {
@@ -275,8 +278,8 @@ public class NetworkAPI {
 
         //Add authentication header
         addAuthenticationHeader(headers);
-        //Add network headers
-        addNetworkModeHeader(headers);
+        //Add control headers
+        addControlHeaders(headers);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.POST,
                 URL,
@@ -297,8 +300,8 @@ public class NetworkAPI {
 
         //Add authentication header
         addAuthenticationHeader(headers);
-        //Add network headers
-        addNetworkModeHeader(headers);
+        //Add control headers
+        addControlHeaders(headers);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.POST,
                 URL,
@@ -311,17 +314,17 @@ public class NetworkAPI {
         ApplicationController.getInstance().addToRequestQueue(req);
     }
 
-    public static void getAdministrationContacts(final CallBack<List<AdministrationCategoryContacts>> onCallBack) {
+    public static void getAdministrationContacts(final ICallBack<List<AdministrationCategoryContacts>> onCallBack) {
         String URL = getURLRoot() + "/contacts/administration";
         makeJsonArrayRequest(AdministrationCategoryContacts.class, URL, false, onCallBack);
     }
 
-    public static void getLecturersContacts(final CallBack<List<LecturerContact>> onCallBack) {
+    public static void getLecturersContacts(final ICallBack<List<LecturerContact>> onCallBack) {
         String URL = getURLRoot() + "/contacts/lecturers";
         makeJsonArrayRequest(LecturerContact.class, URL, false, onCallBack);
     }
 
-    public static void getRooms(final CallBack<List<Room>> onCallBack) {
+    public static void getRooms(final ICallBack<List<Room>> onCallBack) {
         String URL = getURLRoot() + "/schedule/events/rooms";
         makeJsonArrayRequest(Room.class, URL, false, onCallBack);
     }
@@ -331,8 +334,8 @@ public class NetworkAPI {
         String URL = getURLRoot() + "/schedule/events";
 
         HashMap<String, String> headers = new HashMap<>();
-        //Add network headers
-        addNetworkModeHeader(headers);
+        //Add control headers
+        addControlHeaders(headers);
 
         String requestBody = gson.toJson(event);
 
@@ -355,8 +358,8 @@ public class NetworkAPI {
 
         //Add authentication header
         addAuthenticationHeader(headers);
-        //Add network headers
-        addNetworkModeHeader(headers);
+        //Add control headers
+        addControlHeaders(headers);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.DELETE,
                 URL,
@@ -369,7 +372,7 @@ public class NetworkAPI {
         ApplicationController.getInstance().addToRequestQueue(req);
     }
 
-    private static void getImage(final String url, final CallBack<Bitmap> onCallBack) {
+    private static void getImage(final String url, final ICallBack<Bitmap> onCallBack) {
 
         // Retrieves an image specified by the URL, displays it in the UI.
         ImageRequest request = new ImageRequest(url,
@@ -381,7 +384,7 @@ public class NetworkAPI {
                 }, 0, 0, null,
                 new Response.ErrorListener() {
                     public void onErrorResponse(VolleyError error) {
-                        //mImageView.setImageResource(R.drawable.image_load_error);
+                        onCallBack.onFail("Exception in getImage!");
                     }
                 });
 
@@ -395,8 +398,8 @@ public class NetworkAPI {
 
         //Add authentication header
         addAuthenticationHeader(headers);
-        //Add network headers
-        addNetworkModeHeader(headers);
+        //Add control  headers
+        addControlHeaders(headers);
 
         ServerStatusRequest req = new ServerStatusRequest(Request.Method.DELETE,
                 URL,
@@ -425,16 +428,36 @@ public class NetworkAPI {
         return res;
     }
 
-    private static void addNetworkModeHeader(Map header) {
-        if (ApplicationController.getSendNetworkModePref()) {
-            int networkType = ApplicationController.getNetworkType();
-            if (networkType == ConnectivityManager.TYPE_WIFI) {
-                //If connected to WiFi request for full content
-                header.put(NETWORK_MODE_HEADER_KEY, NETWORK_MODE_FULL_KEY);
-            } else {
-                header.put(NETWORK_MODE_HEADER_KEY, NETWORK_MODE_COMPACT_KEY);
+    private static void addControlHeaders(Map header) {
+        //Add ContentMode header
+        switch (ApplicationController.getContentPref()){
+            case "DETECT" : {
+                int networkType = ApplicationController.getNetworkType();
+                if (networkType == ConnectivityManager.TYPE_WIFI) {
+                    //If connected to WiFi request for full content
+                    header.put(CONTENT_MODE_HEADER_KEY, CONTENT_MODE_FULL_KEY);
+                } else {
+                    header.put(CONTENT_MODE_HEADER_KEY, CONTENT_MODE_COMPACT_KEY);
+                }
+                break;
+            }
+            case "FULL" : {
+                header.put(CONTENT_MODE_HEADER_KEY, CONTENT_MODE_FULL_KEY);
+                break;
+            }
+            case "COMPACT" : {
+                header.put(CONTENT_MODE_HEADER_KEY, CONTENT_MODE_COMPACT_KEY);
+                break;
+            }
+            default : {
+                header.put(CONTENT_MODE_HEADER_KEY, CONTENT_MODE_FULL_KEY);
+                break;
             }
         }
+        
+        //Add locale header
+        header.put(LOCALE_HEADER_KEY, ApplicationController.getLocalePref());
+
     }
 
     private static void addAuthenticationHeader(Map header) {
@@ -450,7 +473,7 @@ public class NetworkAPI {
         return ret;
     }
 
-    private static <T> void makeJsonObjectRequest(final Class<T> typeParameterClass, final String url, final int method, String requestBody, final boolean addAuthHeader, final CallBack<T> onCallBack) {
+    private static <T> void makeJsonObjectRequest(final Class<T> typeParameterClass, final String url, final int method, String requestBody, final boolean addAuthHeader, final ICallBack<T> onCallBack) {
 
         JsonRequest req = new JsonObjectRequest(method, url, requestBody, new Response.Listener<JSONObject>() {
             @Override
@@ -461,15 +484,15 @@ public class NetworkAPI {
                     T result = gson.fromJson(jsonObj.toString(), typeParameterClass);
                     onCallBack.onSuccess(result);
                 } catch (Exception ex) {
-                    Log.e("FMI_APP_EXCEPTION", ex.toString());
-                    onCallBack.onFail(ex.toString());
+                    //Log.e("FMI_APP_EXCEPTION", ex.toString());
+                    onCallBack.onFail("Exception in makeJsonObjectRequest!");
                 }
             }
         }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("FMI_APP_EXCEPTION", error.toString());
-                onCallBack.onFail(error.toString());
+                //Log.e("FMI_APP_EXCEPTION", error.toString());
+                onCallBack.onFail("Exception in makeJsonObjectRequest!");
                 return;
             }
         }) {
@@ -479,7 +502,7 @@ public class NetworkAPI {
                 if (addAuthHeader) {
                     addAuthenticationHeader(headers);
                 }
-                addNetworkModeHeader(headers);
+                addControlHeaders(headers);
                 return headers;
             }
         };
@@ -487,11 +510,11 @@ public class NetworkAPI {
         ApplicationController.getInstance().addToRequestQueue(req);
     }
 
-    private static <T> void makeJsonObjectRequest(final Class<T> typeParameterClass, final String url, final boolean addAuthHeader, final CallBack<T> onCallBack) {
+    private static <T> void makeJsonObjectRequest(final Class<T> typeParameterClass, final String url, final boolean addAuthHeader, final ICallBack<T> onCallBack) {
         makeJsonObjectRequest(typeParameterClass, url, Request.Method.GET, null, addAuthHeader, onCallBack);
     }
 
-    private static <T> void makeJsonArrayRequest(final Class<T> typeParameterClass, final String url, final boolean addAuthHeader, final CallBack<List<T>> onCallBack) {
+    private static <T> void makeJsonArrayRequest(final Class<T> typeParameterClass, final String url, final boolean addAuthHeader, final ICallBack<List<T>> onCallBack) {
         final Class<T> classType = typeParameterClass;
 
         JsonArrayRequest req = new JsonArrayRequest(Request.Method.GET, url,
@@ -510,7 +533,8 @@ public class NetworkAPI {
                                     T item = gson.fromJson(jsonObj.toString(), typeParameterClass);
                                     result.add(item);
                                 } catch (Exception ex) {
-                                    Log.e("FMI_APP_EXCEPTION", ex.getMessage());
+                                    //Log.e("FMI_APP_EXCEPTION", ex.toString());
+                                    onCallBack.onFail("Exception in makeJsonArrayRequest!");
                                 }
                             }
 
@@ -518,15 +542,16 @@ public class NetworkAPI {
                             onCallBack.onSuccess(result);
 
                         } catch (JSONException e) {
-                            Log.e("FMI_APP_EXCEPTION", e.getMessage());
+                            //Log.e("FMI_APP_EXCEPTION", e.toString());
+                            onCallBack.onFail("Exception in makeJsonArrayRequest!");
                         }
 
                     }
                 }, new Response.ErrorListener() {
             @Override
             public void onErrorResponse(VolleyError error) {
-                Log.e("FMI_APP_EXCEPTION", error.getMessage());
-                onCallBack.onFail(error.getMessage());
+                //Log.e("FMI_APP_EXCEPTION", error.toString());
+                onCallBack.onFail("Exception in makeJsonArrayRequest!");
             }
         }) {
             @Override
@@ -535,16 +560,10 @@ public class NetworkAPI {
                 if (addAuthHeader) {
                     addAuthenticationHeader(headers);
                 }
-                addNetworkModeHeader(headers);
+                addControlHeaders(headers);
                 return headers;
             }
         };
-
-        try {
-            Log.v("Eve_trace", "headers_count=" + req.getHeaders().size());
-        } catch (AuthFailureError authFailureError) {
-            authFailureError.printStackTrace();
-        }
 
         // add the request object to the queue to be executed
         ApplicationController.getInstance().addToRequestQueue(req);

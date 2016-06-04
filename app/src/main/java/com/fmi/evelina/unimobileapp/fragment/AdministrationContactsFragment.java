@@ -18,7 +18,7 @@ import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.helper.adapter.AdministrationContactsListAdapter;
 import com.fmi.evelina.unimobileapp.model.contacts_model.AdministrationCategoryContacts;
 import com.fmi.evelina.unimobileapp.model.contacts_model.AdministrationContactData;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,10 +97,9 @@ public class AdministrationContactsFragment extends Fragment {
             }
         });
 
-        ApplicationController.getDataProvider().getAdministrationContacts(new CallBack<List<AdministrationCategoryContacts>>() {
+        ApplicationController.getDataProvider().getAdministrationContacts(new ICallBack<List<AdministrationCategoryContacts>>() {
             @Override
             public void onSuccess(List<AdministrationCategoryContacts> data) {
-                Log.v("EVE_TRACE","sizeA="+ data.size());
                 for (AdministrationCategoryContacts cont : data) {
                     contactsList.put(cont.Category, cont.Contacts);
                 }

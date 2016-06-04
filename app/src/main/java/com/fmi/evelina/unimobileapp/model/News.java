@@ -2,21 +2,14 @@ package com.fmi.evelina.unimobileapp.model;
 
 import android.graphics.Bitmap;
 
-import com.alamkanak.weekview.WeekViewEvent;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
-import com.fmi.evelina.unimobileapp.helper.EventColorMap;
 import com.fmi.evelina.unimobileapp.helper.ImageHelper;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
-import org.joda.time.DateTime;
-import org.joda.time.LocalDate;
-import org.joda.time.LocalTime;
-
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.sql.Time;
 import java.util.Date;
 
 /**

@@ -6,10 +6,10 @@
     android:padding="20dp">
 
     <!--<TextView-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:text="@string/calendar_event_details"-->
-        <!--android:textAppearance="?android:attr/textAppearanceLarge" />-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:text="@string/calendar_event_details"-->
+    <!--android:textAppearance="?android:attr/textAppearanceLarge" />-->
 
     <TableLayout
         android:layout_width="wrap_content"
@@ -165,18 +165,15 @@
                 android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </TableRow>
-
-        <TableRow>
-
-            <Button
-                android:id="@+id/btnEventDelete"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_span="2"
-                android:layout_weight="1"
-                android:text="@string/delete_button"
-                android:visibility="gone"/>
-        </TableRow>
     </TableLayout>
+
+    <Button
+        android:id="@+id/btnEventDelete"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_span="2"
+        android:layout_weight="1"
+        android:text="@string/delete_button"
+        android:visibility="gone" />
 
 </LinearLayout>

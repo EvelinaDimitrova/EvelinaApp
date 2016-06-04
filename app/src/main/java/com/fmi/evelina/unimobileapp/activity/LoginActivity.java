@@ -21,7 +21,7 @@ import android.widget.Toast;
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.controller.ApplicationController;
 import com.fmi.evelina.unimobileapp.model.User;
-import com.fmi.evelina.unimobileapp.network.CallBack;
+import com.fmi.evelina.unimobileapp.network.ICallBack;
 
 /**
  * A login screen that offers login via email/password.
@@ -111,7 +111,7 @@ public class LoginActivity extends AppCompatActivity {
             showProgress(true);
 
             // Call the API to verify the user
-            ApplicationController.getDataProvider().signIn(userId, password, new CallBack<User>() {
+            ApplicationController.getDataProvider().signIn(userId, password, new ICallBack<User>() {
                 @Override
                 public void onSuccess(User data) {
                     showProgress(false);

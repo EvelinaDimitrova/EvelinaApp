@@ -54,6 +54,10 @@ public class ElectionCampaign implements Parcelable {
         EndDate = tmpEndDate != -1 ? new Date(tmpEndDate) : null;
     }
 
+    public ElectionCampaign(){
+
+    }
+
     @Override
     public int describeContents() {
         return 0;

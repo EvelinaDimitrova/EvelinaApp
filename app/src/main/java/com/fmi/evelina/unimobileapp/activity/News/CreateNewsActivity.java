@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import com.android.volley.Response;
@@ -33,7 +34,7 @@ public class CreateNewsActivity extends DrawerBaseActivity {
     private static int RESULT_LOAD_IMAGE = 1;
     private static News newsToSave;
 
-    private Button buttonLoadImage;
+    private ImageButton buttonLoadImage;
     private Button buttonSaveNews;
     private Button buttonCancel;
     private EditText title;
@@ -49,7 +50,7 @@ public class CreateNewsActivity extends DrawerBaseActivity {
         title = (EditText) findViewById(R.id.create_news_title);
         text = (EditText) findViewById(R.id.create_news_text);
 
-        buttonLoadImage = (Button) findViewById(R.id.create_news_add_image);
+        buttonLoadImage = (ImageButton) findViewById(R.id.create_news_add_image);
         buttonLoadImage.setOnClickListener(new View.OnClickListener() {
 
             @Override
@@ -88,7 +89,7 @@ public class CreateNewsActivity extends DrawerBaseActivity {
                         new Response.ErrorListener() {
                             @Override
                             public void onErrorResponse(VolleyError error) {
-
+                                ApplicationController.showErrorToast();
                             }
                         });
             }

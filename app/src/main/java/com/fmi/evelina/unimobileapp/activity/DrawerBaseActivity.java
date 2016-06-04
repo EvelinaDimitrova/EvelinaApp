@@ -72,6 +72,8 @@ public class DrawerBaseActivity extends AppCompatActivity
             ApplicationController.getInstance().setLoggedUser(null);
 
             Intent home = new Intent(this, HomeActivity.class);
+            //Clear the back stack
+            home.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
             startActivity(home);
         } else if (id == R.id.nav_calendar) {
             Intent calendar = new Intent(this, CalendarActivity.class);

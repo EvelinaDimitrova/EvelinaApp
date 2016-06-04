@@ -5,11 +5,6 @@ import android.content.Intent;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.preference.PreferenceFragment;
-import android.support.v4.app.Fragment;
-import android.view.LayoutInflater;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.TextView;
 
 import com.fmi.evelina.unimobileapp.R;
 import com.fmi.evelina.unimobileapp.activity.SettingsActivity;
@@ -44,16 +39,16 @@ public class SettingFragment extends PreferenceFragment implements SharedPrefere
 
     @Override
     public void onSharedPreferenceChanged(SharedPreferences sharedPreferences, String key) {
-        if (key.equals(SettingsActivity.KEY_PREF_SERVER_URL)) {
-            String newUrl = sharedPreferences.getString(key, "");
+        if (key.equals(getString(R.string.PREF_SERVER_URL))) {
+            String newUrl = sharedPreferences.getString(key, getString(R.string.pref_default_url));
             ApplicationController.setServerURLPref(newUrl);
         }
-        if (key.equals(SettingsActivity.KEY_PREF_SEND_NETWORK_MODE)) {
-            Boolean send = sharedPreferences.getBoolean(key, true);
-            ApplicationController.setSendNetworkModePref(send);
+        if (key.equals(getString(R.string.PREF_CONTENT_MODE))) {
+            String contentMode = sharedPreferences.getString(key, getString(R.string.pref_content_mode_default));
+            ApplicationController.setContentModePref(contentMode);
         }
-        if (key.equals(SettingsActivity.KEY_PREF_LOCALE)) {
-            String locale = sharedPreferences.getString(key, "en");
+        if (key.equals(getString(R.string.PREF_LANGUAGE))) {
+            String locale = sharedPreferences.getString(key, getString(R.string.pref_lang_default));
             ApplicationController.setLocalePref(locale);
 
             //Reload the Activity
